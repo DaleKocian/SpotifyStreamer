@@ -88,7 +88,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Artist selectedArtist = artistSearchResultsAdapter.getItem(position);
         Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
-        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_NAME, selectedArtist.name);
+        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, selectedArtist.id);
         startActivity(topTenTrackIntent);
     }
 
@@ -101,7 +101,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private class SearchArtists extends AsyncTask<String, Integer, ArtistsPager> {
         protected ArtistsPager doInBackground(String... query) {
             String q = query[0];
-
             return spotifyService.searchArtists(q);
         }
 

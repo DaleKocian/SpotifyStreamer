@@ -1,24 +1,37 @@
 package dalekocian.github.io.spotifystreamer;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import dalekocian.github.io.spotifystreamer.Utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.adapters.TopTenTracksAdapter;
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.Tracks;
 
 
 public class TopTenTrackActivity extends AppCompatActivity {
-
+    private static final String TAG = TopTenTrackActivity.class.getName();
+    private TopTenTracksAdapter topTenTracksAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ListView listView = new ListView(this);
         setContentView(listView);
-        String artistName = getIntent().getStringExtra(ExtraKeys.ARTIST_NAME);
-        Toast.makeText(this, artistName, Toast.LENGTH_SHORT).show();
+        String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
+        topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
+        listView.setAdapter(topTenTracksAdapter);
+        new SearchArtistsTopTracks().execute(artistId);
     }
 
     @Override
@@ -41,5 +54,21 @@ public class TopTenTrackActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class SearchArtistsTopTracks extends AsyncTask<String, Integer, Tracks> {
+        protected Tracks doInBackground(String... query) {
+            String q = query[0];
+            SpotifyService spotifyService = new SpotifyApi().getService();
+            Map<String, Object> params = new HashMap<>();
+            params.put("country", "US");
+            return spotifyService.getArtistTopTrack(q, params);
+        }
+
+        protected void onPostExecute(Tracks tracks) {
+            List<Track> trackList = tracks.tracks;
+            topTenTracksAdapter.addAll(trackList);
+            topTenTracksAdapter.notifyDataSetChanged();
+        }
     }
 }
