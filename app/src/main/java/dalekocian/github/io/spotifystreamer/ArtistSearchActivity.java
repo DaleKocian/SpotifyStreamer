@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import dalekocian.github.io.spotifystreamer.Utils.ExtraKeys;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -25,8 +25,8 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Pager;
 
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
-    private static final String TAG = MainActivity.class.getName();
+public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
+    private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String NO_ARTISTS_FOUND = "No artists found!";
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
     private SpotifyService spotifyService;
@@ -60,10 +60,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return true;
     }
 
-    @Override
+/*    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(ARTISTS_BUNDLE_KEY, (ArrayList<Artist>) artistSearchResultsAdapter.getArtistList());
-
         super.onSaveInstanceState(outState);
     }
 
@@ -72,18 +71,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         List<Artist> artistList = (ArrayList<Artist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
         updateListView(artistList);
         super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         new SearchArtists().execute(query);
-        return true;
+        return false;
     }
 
     @Override
@@ -93,7 +86,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Artist selectedArtist = artistSearchResultsAdapter.getItem(position);
+        Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
+        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_NAME, selectedArtist.name);
+        startActivity(topTenTrackIntent);
     }
 
     public void updateListView(List<Artist> artistList) {
@@ -112,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         protected void onPostExecute(ArtistsPager result) {
             Pager<Artist> artistPager = result.artists;
             if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty() ) {
-                Toast.makeText(MainActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArtistSearchActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
             } else {
                 updateListView(artistPager.items);
             }
