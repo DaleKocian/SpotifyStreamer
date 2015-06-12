@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Colors are named using this site http://chir.ag/projects/name-that-color-->
+<resources>
+    <item name="gallery" type="color">#eeeeee</item>
+</resources>

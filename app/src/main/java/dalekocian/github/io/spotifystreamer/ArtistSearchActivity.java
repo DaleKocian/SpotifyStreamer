@@ -35,17 +35,17 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.list_view_ui);
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
         }
         spotifyService = new SpotifyApi().getService();
-        ListView lvArtistResults = (ListView) findViewById(R.id.lvArtistResults);
+        ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
-        lvArtistResults.setAdapter(artistSearchResultsAdapter);
-        lvArtistResults.setOnItemClickListener(this);
+        lvListItems.setAdapter(artistSearchResultsAdapter);
+        lvListItems.setOnItemClickListener(this);
     }
 
     @Override

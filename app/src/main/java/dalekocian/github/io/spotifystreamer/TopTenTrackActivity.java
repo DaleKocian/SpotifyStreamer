@@ -26,11 +26,11 @@ public class TopTenTrackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListView listView = new ListView(this);
-        setContentView(listView);
+        setContentView(R.layout.list_view_ui);
+        ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
         String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
         topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
-        listView.setAdapter(topTenTracksAdapter);
+        lvListItems.setAdapter(topTenTracksAdapter);
         new SearchArtistsTopTracks().execute(artistId);
     }
 
