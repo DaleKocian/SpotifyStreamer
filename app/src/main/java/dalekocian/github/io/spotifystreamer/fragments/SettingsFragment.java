@@ -2,6 +2,7 @@ package dalekocian.github.io.spotifystreamer.fragments;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -16,7 +17,7 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        ListPreference countryCode = (ListPreference) findPreference("country_code");
+        final ListPreference countryCode = (ListPreference) findPreference("country_code");
         CountryCode[] enumConstants = CountryCode.values();
         CharSequence[] countryEntries = new CharSequence[enumConstants.length-1];
         CharSequence[] countryValues = new CharSequence[enumConstants.length-1];
@@ -26,5 +27,14 @@ public class SettingsFragment extends PreferenceFragment {
         }
         countryCode.setEntries(countryEntries);
         countryCode.setEntryValues(countryValues);
+        countryCode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                preference.setSummary(countryCode.getValue());
+                return false;
+            }
+        });
     }
+
+
 }
