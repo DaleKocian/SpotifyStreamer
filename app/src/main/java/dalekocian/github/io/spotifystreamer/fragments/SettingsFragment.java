@@ -8,6 +8,7 @@ import android.preference.PreferenceFragment;
 import com.neovisionaries.i18n.CountryCode;
 
 import dalekocian.github.io.spotifystreamer.R;
+import dalekocian.github.io.spotifystreamer.Utils.Utils;
 
 /**
  * Created by k557782 on 6/12/2015.
@@ -30,10 +31,14 @@ public class SettingsFragment extends PreferenceFragment {
         countryCode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                preference.setSummary(countryCode.getValue());
+                countryCode.setValue((String)newValue);
+                countryCode.setSummary((String)newValue);
                 return false;
             }
         });
+        String currentCountryCode = Utils.getCountryCode(getActivity());
+        countryCode.setValue(currentCountryCode);
+        countryCode.setSummary(currentCountryCode);
     }
 
 
