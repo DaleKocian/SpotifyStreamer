@@ -68,7 +68,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
             String q = query[0];
             SpotifyService spotifyService = new SpotifyApi().getService();
             Map<String, Object> params = new HashMap<>();
-            params.put(COUNTRY_PARAM_KEY, Utils.getCountryCode(TopTenTrackActivity.this));
+            params.put(COUNTRY_PARAM_KEY, Utils.getCountryCodeFromSettings(TopTenTrackActivity.this));
             try {
                 return spotifyService.getArtistTopTrack(q, params);
             } catch (RetrofitError e) {

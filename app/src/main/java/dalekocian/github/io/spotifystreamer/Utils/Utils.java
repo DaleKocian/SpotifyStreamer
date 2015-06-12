@@ -5,12 +5,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
- * Created by k557782 on 6/12/2015.
+ * Created by Dale Kocian on 6/12/2015.
  */
 public class Utils {
-    public static String getCountryCode(Context context) {
+    public static String getCountryCodeFromSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        String countryCode = sharedPref.getString("country_code", "US");
-        return countryCode;
+        return sharedPref.getString("country_code", "US");
     }
 }
