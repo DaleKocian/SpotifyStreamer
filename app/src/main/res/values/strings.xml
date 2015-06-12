@@ -7,4 +7,5 @@
     <string name="action_search">Search</string>
     <string name="title_activity_other">OtherActivity</string>
     <string name="title_activity_top_ten_track">TopTenTrackActivity</string>
+    <string name="title_activity_preference">PreferenceActivity</string>
 </resources>
