@@ -18,7 +18,8 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        final ListPreference countryCode = (ListPreference) findPreference("country_code");
+        String country_code_list_pref_key = getResources().getString(R.string.country_code_list_pref_key);
+        final ListPreference countryCode = (ListPreference) findPreference(country_code_list_pref_key);
         countryCode.setEntries(getCountryEntriesValues().countryEntries);
         countryCode.setEntryValues(getCountryEntriesValues().countryValues);
         countryCode.setOnPreferenceChangeListener(getCountryCodePreferenceChangeListener());

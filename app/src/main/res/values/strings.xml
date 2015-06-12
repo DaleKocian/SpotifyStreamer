@@ -8,4 +8,6 @@
     <string name="title_activity_other">OtherActivity</string>
     <string name="title_activity_top_ten_track">TopTenTrackActivity</string>
     <string name="title_activity_preference">PreferenceActivity</string>
+    <string name="country_code_list_pref_key">country_code</string>
+    <string name="default_country_code">US</string>
 </resources>
