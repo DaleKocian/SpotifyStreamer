@@ -1,4 +1,4 @@
-package dalekocian.github.io.spotifystreamer;
+package dalekocian.github.io.spotifystreamer.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -17,8 +17,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import dalekocian.github.io.spotifystreamer.Utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
+import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
@@ -110,6 +111,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private class SearchArtists extends AsyncTask<String, Integer, ArtistsPager> {
+
         protected ArtistsPager doInBackground(String... query) {
             String q = query[0];
             return spotifyService.searchArtists(q);

@@ -8,7 +8,7 @@ import android.preference.PreferenceFragment;
 import com.neovisionaries.i18n.CountryCode;
 
 import dalekocian.github.io.spotifystreamer.R;
-import dalekocian.github.io.spotifystreamer.Utils.Utils;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 
 /**
  * Created by Dale Kocian on 6/12/2015.

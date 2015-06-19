@@ -1,9 +1,10 @@
-package dalekocian.github.io.spotifystreamer;
+package dalekocian.github.io.spotifystreamer.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 
+import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.fragments.SettingsFragment;
 
 

@@ -1,4 +1,4 @@
-package dalekocian.github.io.spotifystreamer;
+package dalekocian.github.io.spotifystreamer.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,9 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dalekocian.github.io.spotifystreamer.Utils.ExtraKeys;
-import dalekocian.github.io.spotifystreamer.Utils.Utils;
+import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.TopTenTracksAdapter;
+import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
