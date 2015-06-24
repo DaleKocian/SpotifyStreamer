@@ -1,4 +1,4 @@
-package dalekocian.github.io.spotifystreamer.utilss;
+package dalekocian.github.io.spotifystreamer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
