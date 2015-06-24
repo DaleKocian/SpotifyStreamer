@@ -1,4 +1,4 @@
-package dalekocian.github.io.spotifystreamer.Utils;
+package dalekocian.github.io.spotifystreamer.utilss;
 
 /**
  * Created by k557782 on 6/10/2015.
