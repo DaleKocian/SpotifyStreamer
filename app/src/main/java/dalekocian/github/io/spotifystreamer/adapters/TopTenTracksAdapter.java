@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.Track;
 
@@ -48,10 +49,13 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
         }
         Track track = trackList.get(position);
         AlbumSimple album = track.album;
-
-        Picasso.with(activity).load(album.images.get(0).url).into(viewContainer.ivAlbumImage);
-        viewContainer.tvTrackName.setText(track.name);
-        viewContainer.tvAlbumName.setText(album.name);
+        if (album.images != null && album.images.size() > 0) {
+            Picasso.with(activity).load(album.images.get(0).url).into(viewContainer.ivAlbumImage);
+        } else {
+            viewContainer.ivAlbumImage.setImageResource(R.drawable.spotify_default_cover);
+        }
+        viewContainer.tvTrackName.setText(Utils.returnEmptyStringIfNull(track.name));
+        viewContainer.tvAlbumName.setText(Utils.returnEmptyStringIfNull(album.name));
         return rowView;
     }
 

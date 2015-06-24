@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
 
 /**
@@ -45,12 +46,12 @@ public class ArtistSearchResultsAdapter extends ArrayAdapter<Artist> {
             viewContainer = (ViewContainer) rowView.getTag();
         }
         Artist artist = artistList.get(position);
-        if (artist.images.size() > 0) {
+        if (artist.images != null && artist.images.size() > 0) {
             Picasso.with(activity).load(artist.images.get(0).url).into(viewContainer.ivArtistImage);
+        } else {
+            viewContainer.ivArtistImage.setImageResource(R.drawable.spotify_default_cover);
         }
-        if (artist.name != null) {
-            viewContainer.tvArtistName.setText(artist.name);
-        }
+        viewContainer.tvArtistName.setText(Utils.returnEmptyStringIfNull(artist.name));
         return rowView;
     }
 

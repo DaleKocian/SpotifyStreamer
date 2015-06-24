@@ -19,7 +19,9 @@ import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
@@ -87,9 +89,14 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        new SearchArtists().execute(query);
+        if (Utils.hasInternetConnection(this)) {
+            new SearchArtists().execute(query);
+        } else {
+            Toast.makeText(this, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+        }
         return false;
     }
+
 
     @Override
     public boolean onQueryTextChange(String newText) {

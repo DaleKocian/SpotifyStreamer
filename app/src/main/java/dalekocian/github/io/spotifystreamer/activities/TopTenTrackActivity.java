@@ -16,6 +16,7 @@ import java.util.Map;
 
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.TopTenTracksAdapter;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -44,7 +45,11 @@ public class TopTenTrackActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
-        new SearchArtistsTopTracks().execute(artistId);
+        if (Utils.hasInternetConnection(this)) {
+            new SearchArtistsTopTracks().execute(artistId);
+        } else {
+            Toast.makeText(this, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
