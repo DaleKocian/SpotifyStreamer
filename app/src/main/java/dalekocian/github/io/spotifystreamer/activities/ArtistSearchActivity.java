@@ -14,13 +14,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.asynctasks.ArtistSearch;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
-import dalekocian.github.io.spotifystreamer.model.ParcelableArtist;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
 
@@ -76,7 +74,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+/*    @Override
     protected void onSaveInstanceState(Bundle outState) {
         ArrayList<ParcelableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
         for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
@@ -88,12 +86,12 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        List<ParcelableArtist> artistList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
+        List<ParcelableArtist> artistList = (ArrayList<ParcelableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
         artistSearchResultsAdapter.addAll(artistList);
         artistSearchResultsAdapter.notifyDataSetChanged();
         super.onRestoreInstanceState(savedInstanceState);
-    }
+    }*/
 
     @Override
     public boolean onQueryTextSubmit(String artistName) {
