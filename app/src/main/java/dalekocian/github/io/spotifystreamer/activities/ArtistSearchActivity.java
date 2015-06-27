@@ -78,17 +78,17 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        List<ParcelableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
+        ArrayList<ParcelableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
         for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
             serializableArtists.add(new ParcelableArtist(artist));
         }
-        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, (ArrayList<ParcelableArtist>) serializableArtists);
+        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, serializableArtists);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        List<ParcelableArtist> artistList = (ArrayList<ParcelableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
+        List<ParcelableArtist> artistList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
         artistSearchResultsAdapter.addAll(artistList);
         artistSearchResultsAdapter.notifyDataSetChanged();

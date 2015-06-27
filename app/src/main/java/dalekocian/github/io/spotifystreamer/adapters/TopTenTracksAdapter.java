@@ -59,6 +59,10 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
         return rowView;
     }
 
+    public List<Track> getTrackList() {
+        return trackList;
+    }
+
     static class ViewContainer {
         public ImageView ivAlbumImage;
         public TextView tvAlbumName;

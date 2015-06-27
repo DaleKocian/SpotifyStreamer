@@ -30,6 +30,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
     private static final String TAG = TopTenTrackActivity.class.getName();
     public static final String COUNTRY_PARAM_KEY = "country";
     public static final String NO_TRACKS_FOUND = "No Tracks Found";
+    public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     private TopTenTracksAdapter topTenTracksAdapter;
 
     @Override
@@ -92,4 +93,19 @@ public class TopTenTrackActivity extends AppCompatActivity {
             }
         }
     }
+
+  /*  @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY,
+                (ArrayList<>) topTenTracksAdapter.getTrackList());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        List<Track> trackList = savedInstanceState.getParcelable(TOP_TEN_TRACKS_BUNDLE_KEY);
+        topTenTracksAdapter.addAll(trackList);
+        topTenTracksAdapter.notifyDataSetChanged();
+        super.onRestoreInstanceState(savedInstanceState);
+    }*/
 }
