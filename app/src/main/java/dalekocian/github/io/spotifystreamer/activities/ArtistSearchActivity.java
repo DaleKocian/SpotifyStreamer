@@ -61,8 +61,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(this);
+        searchView.setIconifiedByDefault(false);
         return true;
     }
 
