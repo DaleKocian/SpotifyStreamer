@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,6 +22,8 @@ import dalekocian.github.io.spotifystreamer.asynctasks.ArtistSearch;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Pager;
 
 
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
@@ -28,6 +31,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
     private ArtistSearch artistSearch;
+    private LinearLayout llProgressView;
+    public static final String NO_ARTISTS_FOUND = "No artists found!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +44,47 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
         }
         ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
+        llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
         lvListItems.setOnItemClickListener(this);
         LazyLoadListener lazyLoadListener = new LazyLoadListener() {
             @Override
             public void addNewElements() {
-                artistSearch.searchArtistNext();
+                boolean executedSearch = artistSearch.searchArtistNext();
+                if (executedSearch) {
+                    llProgressView.setVisibility(View.VISIBLE);
+                }
             }
         };
-        artistSearch = new ArtistSearch(this, artistSearchResultsAdapter, lazyLoadListener);
+        artistSearch = new ArtistSearch(this, getArtistSearchResponseListener(lazyLoadListener));
         lvListItems.setOnScrollListener(lazyLoadListener);
+
+    }
+
+    private ArtistSearch.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
+        return new ArtistSearch.ResponseListener() {
+            @Override
+            public void onResponse(ArtistsPager result) {
+                Pager<Artist> artistPager = result.artists;
+                if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
+                    Toast.makeText(ArtistSearchActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
+                } else {
+                    artistSearch.setTotal(artistPager.total);
+                    updateArrayAdapter(artistPager);
+                }
+                lazyLoadListener.doneLoading();
+            }
+        };
+    }
+
+    private void updateArrayAdapter(Pager<Artist> artistPager) {
+        if (artistPager.previous == null) {
+            artistSearchResultsAdapter.clear();
+        }
+        artistSearchResultsAdapter.addAll(artistPager.items);
+        llProgressView.setVisibility(View.GONE);
+        artistSearchResultsAdapter.notifyDataSetChanged();
     }
 
     @Override

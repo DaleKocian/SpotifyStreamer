@@ -2,29 +2,23 @@ package dalekocian.github.io.spotifystreamer.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
 import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
-import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
-import kaaes.spotify.webapi.android.models.Pager;
 
 /**
  * Created by k557782 on 6/25/2015.
  */
 public class ArtistSearch {
-    public static final String NO_ARTISTS_FOUND = "No artists found!";
+
     private final Context context;
-    private final ArrayAdapter<Artist> arrayAdapter;
-    private final LazyLoadListener lazyLoadListener;
     private SpotifyService spotifyService;
     public static final String OFFSET_KEY = "offset";
     public static final String LIMIT_KEY = "limit";
@@ -32,12 +26,13 @@ public class ArtistSearch {
     private int offset;
     private int limit;
     private String artistName;
+    private ResponseListener response;
 
-    public ArtistSearch(Context context, ArrayAdapter<Artist> arrayAdapter, LazyLoadListener lazyLoadListener) {
+
+    public ArtistSearch(Context context, ResponseListener response) {
         this.context = context;
-        this.arrayAdapter = arrayAdapter;
-        this.lazyLoadListener = lazyLoadListener;
         spotifyService = new SpotifyApi().getService();
+        this.response = response;
     }
 
     public boolean searchArtistNext() {
@@ -64,12 +59,8 @@ public class ArtistSearch {
         }
     }
 
-    private void updateArrayAdapter(Pager<Artist> artistPager) {
-        if (artistPager.previous == null) {
-            arrayAdapter.clear();
-        }
-        arrayAdapter.addAll(artistPager.items);
-        arrayAdapter.notifyDataSetChanged();
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     class AsyncArtistSearch extends AsyncTask<String, Integer, ArtistsPager> {
@@ -85,14 +76,11 @@ public class ArtistSearch {
 
         @Override
         protected void onPostExecute(ArtistsPager result) {
-            Pager<Artist> artistPager = result.artists;
-            if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
-                Toast.makeText(context, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
-            } else {
-                total = artistPager.total;
-                updateArrayAdapter(artistPager);
-            }
-            lazyLoadListener.finishLoading();
+            response.onResponse(result);
         }
+    }
+
+    public interface ResponseListener {
+        void onResponse(ArtistsPager result);
     }
 }

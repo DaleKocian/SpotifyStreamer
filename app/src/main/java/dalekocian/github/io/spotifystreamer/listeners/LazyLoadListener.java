@@ -30,7 +30,7 @@ public abstract class LazyLoadListener implements AbsListView.OnScrollListener {
         Need to call this method when addNewElements finishes adding new elements to the list view, since it will only
         add new elements when LazyLoadListener is not loading new elements.
      */
-    public void finishLoading() {
+    public void doneLoading() {
         isLoading = false;
     }
 
