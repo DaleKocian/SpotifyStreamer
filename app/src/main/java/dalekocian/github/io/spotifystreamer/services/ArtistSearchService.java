@@ -1,4 +1,4 @@
-package dalekocian.github.io.spotifystreamer.asynctasks;
+package dalekocian.github.io.spotifystreamer.services;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,7 +16,7 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 /**
  * Created by k557782 on 6/25/2015.
  */
-public class ArtistSearch {
+public class ArtistSearchService {
 
     private final Context context;
     private SpotifyService spotifyService;
@@ -29,7 +29,7 @@ public class ArtistSearch {
     private ResponseListener response;
 
 
-    public ArtistSearch(Context context, ResponseListener response) {
+    public ArtistSearchService(Context context, ResponseListener response) {
         this.context = context;
         spotifyService = new SpotifyApi().getService();
         this.response = response;

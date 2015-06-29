@@ -15,11 +15,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
-import dalekocian.github.io.spotifystreamer.asynctasks.ArtistSearch;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
+import dalekocian.github.io.spotifystreamer.model.SerializableArtist;
+import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
@@ -29,11 +31,12 @@ import kaaes.spotify.webapi.android.models.Pager;
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
     private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
+    public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
-    private ArtistSearch artistSearch;
+    private ArtistSearchService artistSearchService;
     private LinearLayout llProgressView;
     public static final String NO_ARTISTS_FOUND = "No artists found!";
-
+    private String searchString = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,26 +54,26 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         LazyLoadListener lazyLoadListener = new LazyLoadListener() {
             @Override
             public void addNewElements() {
-                boolean executedSearch = artistSearch.searchArtistNext();
+                boolean executedSearch = artistSearchService.searchArtistNext();
                 if (executedSearch) {
                     llProgressView.setVisibility(View.VISIBLE);
                 }
             }
         };
-        artistSearch = new ArtistSearch(this, getArtistSearchResponseListener(lazyLoadListener));
+        artistSearchService = new ArtistSearchService(this, getArtistSearchResponseListener(lazyLoadListener));
         lvListItems.setOnScrollListener(lazyLoadListener);
 
     }
 
-    private ArtistSearch.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
-        return new ArtistSearch.ResponseListener() {
+    private ArtistSearchService.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
+        return new ArtistSearchService.ResponseListener() {
             @Override
             public void onResponse(ArtistsPager result) {
                 Pager<Artist> artistPager = result.artists;
                 if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
                     Toast.makeText(ArtistSearchActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
                 } else {
-                    artistSearch.setTotal(artistPager.total);
+                    artistSearchService.setTotal(artistPager.total);
                     updateArrayAdapter(artistPager);
                 }
                 lazyLoadListener.doneLoading();
@@ -96,6 +99,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(this);
         searchView.setIconifiedByDefault(false);
+        searchView.setQuery(searchString, false);
         return true;
     }
 
@@ -109,34 +113,37 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         return super.onOptionsItemSelected(item);
     }
 
-/*    @Override
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
-        ArrayList<ParcelableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
+        ArrayList<SerializableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
         for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
-            serializableArtists.add(new ParcelableArtist(artist));
+            serializableArtists.add(new SerializableArtist(artist));
         }
-        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, serializableArtists);
+        outState.putSerializable(ARTISTS_BUNDLE_KEY, serializableArtists);
+        outState.putCharSequence(SEARCH_STRING_BUNDLE_KEY, searchString);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        List<ParcelableArtist> artistList = (ArrayList<ParcelableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
+        List<SerializableArtist> artistList = (ArrayList<SerializableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
+        searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
         artistSearchResultsAdapter.addAll(artistList);
         artistSearchResultsAdapter.notifyDataSetChanged();
         super.onRestoreInstanceState(savedInstanceState);
-    }*/
+    }
 
     @Override
     public boolean onQueryTextSubmit(String artistName) {
-        artistSearch.searchArtist(artistName);
+        artistSearchService.searchArtist(artistName);
         return false;
     }
 
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        searchString = newText;
         return false;
     }
 
