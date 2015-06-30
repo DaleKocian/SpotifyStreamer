@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,12 +33,14 @@ public class TopTenTrackActivity extends AppCompatActivity {
     public static final String NO_TRACKS_FOUND = "No Tracks Found";
     public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     private TopTenTracksAdapter topTenTracksAdapter;
-
+    private RelativeLayout rlLoadingScreen;
+    private ListView lvListItems;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.top_ten_tracks_ui);
-        ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
+        rlLoadingScreen = (RelativeLayout)findViewById(R.id.rlLoadingScreen);
+        lvListItems = (ListView) findViewById(R.id.lvListItems);
         topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
         lvListItems.setAdapter(topTenTracksAdapter);
     }
@@ -46,6 +50,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
         super.onResume();
         String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
         if (Utils.hasInternetConnection(this)) {
+            showLoadingScreen();
             new SearchArtistsTopTracks().execute(artistId);
         } else {
             Toast.makeText(this, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
@@ -83,6 +88,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Tracks tracks) {
+            showResults();
             if (tracks != null) {
                 List<Track> trackList = tracks.tracks;
                 topTenTracksAdapter.addAll(trackList);
@@ -91,5 +97,13 @@ public class TopTenTrackActivity extends AppCompatActivity {
                 Toast.makeText(TopTenTrackActivity.this, NO_TRACKS_FOUND, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private void showLoadingScreen() {
+        lvListItems.setVisibility(View.GONE);
+        rlLoadingScreen.setVisibility(View.VISIBLE);
+    }
+    private void showResults() {
+        rlLoadingScreen.setVisibility(View.GONE);
+        lvListItems.setVisibility(View.VISIBLE);
     }
 }

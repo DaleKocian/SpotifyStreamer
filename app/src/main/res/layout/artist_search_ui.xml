@@ -4,25 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/rlLoadingScreen"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone"
-        android:gravity="center">
-
-        <ProgressBar
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/pbSpotifyLoading" />
-
-        <ImageView
-            android:layout_margin="20dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/spotify_default_cover"
-            android:id="@+id/ivSpotifyIcon" />
-    </RelativeLayout>
+    <include android:id="@+id/rlLoadingScreen"
+        layout="@layout/progress_screen"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
