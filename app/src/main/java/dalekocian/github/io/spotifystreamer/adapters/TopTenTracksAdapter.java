@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -13,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
+import dalekocian.github.io.spotifystreamer.callbacks.ImageLoadedCallback;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.Track;
@@ -40,6 +42,7 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
             LayoutInflater inflater = activity.getLayoutInflater();
             rowView = inflater.inflate(resource, null, true);
             viewContainer = new ViewContainer();
+            viewContainer.pbArtistLoadingImage = (ProgressBar) rowView.findViewById(R.id.pbArtistLoadingImage);
             viewContainer.ivAlbumImage = (ImageView) rowView.findViewById(R.id.ivAlbumImage);
             viewContainer.tvAlbumName = (TextView) rowView.findViewById(R.id.tvAlbumName);
             viewContainer.tvTrackName = (TextView) rowView.findViewById(R.id.tvTrackName);
@@ -50,12 +53,13 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
         Track track = trackList.get(position);
         AlbumSimple album = track.album;
         if (album.images != null && album.images.size() > 0) {
-            Picasso.with(activity).load(album.images.get(0).url).into(viewContainer.ivAlbumImage);
+            Picasso.with(activity).load(album.images.get(0).url).into(viewContainer.ivAlbumImage,
+                    new ImageLoadedCallback(viewContainer.pbArtistLoadingImage));
         } else {
             viewContainer.ivAlbumImage.setImageResource(R.drawable.spotify_default_cover);
         }
-        viewContainer.tvTrackName.setText(Utils.returnEmptyStringIfNull(track.name));
-        viewContainer.tvAlbumName.setText(Utils.returnEmptyStringIfNull(album.name));
+        viewContainer.tvTrackName.setText(Utils.emptyToNull(track.name));
+        viewContainer.tvAlbumName.setText(Utils.emptyToNull(album.name));
         return rowView;
     }
 
@@ -64,6 +68,7 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
     }
 
     static class ViewContainer {
+        public ProgressBar pbArtistLoadingImage;
         public ImageView ivAlbumImage;
         public TextView tvAlbumName;
         public TextView tvTrackName;

@@ -5,8 +5,8 @@
         <!--<item name="android:background">@color/gallery</item>-->
     </style>
     <style name="listImage" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:width">@dimen/list_image_width</item>
-        <item name="android:height">@dimen/list_image_height</item>
+        <item name="android:layout_width">@dimen/list_image_width</item>
+        <item name="android:layout_height">@dimen/list_image_height</item>
         <item name="android:layout_margin">@dimen/list_image_margin</item>
     </style>
 </resources>

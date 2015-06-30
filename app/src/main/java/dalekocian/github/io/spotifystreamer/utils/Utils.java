@@ -6,6 +6,9 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+
+import java.util.Collection;
 
 import dalekocian.github.io.spotifystreamer.R;
 
@@ -22,12 +25,21 @@ public class Utils {
 
     public static boolean hasInternetConnection(Context context) {
         ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static String returnEmptyStringIfNull(String str) {
-        return str == null ? "" : str;
+    public static boolean isNullOrEmpty(@Nullable String string) {
+        return string == null || string.length() == 0;
+    }
+
+    public static boolean isNullOrEmpty(@Nullable Collection collection) {
+        return collection == null || collection.size() == 0;
+    }
+
+
+    public static String emptyToNull(@Nullable String string) {
+        return isNullOrEmpty(string) ? null : string;
     }
 }

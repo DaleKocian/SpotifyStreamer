@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     >
+
+    <ProgressBar
+        style="@style/listImage"
+        android:id="@+id/pbArtistLoadingImage" />
 
     <ImageView
         style="@style/listImage"
-        android:layout_width="@dimen/list_image_width"
-        android:layout_height="@dimen/list_image_height"
         android:id="@+id/ivArtistImage"
-        />
+        android:contentDescription="Artist Image" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,5 +19,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Artist Name"
         android:id="@+id/tvArtistName"
-        android:layout_gravity="center_vertical" />
-</LinearLayout>
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@+id/ivArtistImage"
+        android:layout_centerVertical="true" />
+</RelativeLayout>

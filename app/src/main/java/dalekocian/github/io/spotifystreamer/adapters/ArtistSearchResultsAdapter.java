@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -13,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
+import dalekocian.github.io.spotifystreamer.callbacks.ImageLoadedCallback;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
 
@@ -41,17 +43,19 @@ public class ArtistSearchResultsAdapter extends ArrayAdapter<Artist> {
             viewContainer = new ViewContainer();
             viewContainer.ivArtistImage = (ImageView) rowView.findViewById(R.id.ivArtistImage);
             viewContainer.tvArtistName = (TextView) rowView.findViewById(R.id.tvArtistName);
+            viewContainer.pbArtistLoadingImage = (ProgressBar) rowView.findViewById(R.id.pbArtistLoadingImage);
             rowView.setTag(viewContainer);
         } else {
             viewContainer = (ViewContainer) rowView.getTag();
         }
         Artist artist = artistList.get(position);
-        if (artist.images != null && artist.images.size() > 0) {
-            Picasso.with(activity).load(artist.images.get(0).url).into(viewContainer.ivArtistImage);
-        } else {
+        if (Utils.isNullOrEmpty(artist.images)) {
             viewContainer.ivArtistImage.setImageResource(R.drawable.spotify_default_cover);
+        } else {
+            Picasso.with(activity).load(artist.images.get(0).url).into(viewContainer.ivArtistImage,
+                    new ImageLoadedCallback(viewContainer.pbArtistLoadingImage));
         }
-        viewContainer.tvArtistName.setText(Utils.returnEmptyStringIfNull(artist.name));
+        viewContainer.tvArtistName.setText(Utils.emptyToNull(artist.name));
         return rowView;
     }
 
@@ -62,5 +66,6 @@ public class ArtistSearchResultsAdapter extends ArrayAdapter<Artist> {
     static class ViewContainer {
         public ImageView ivArtistImage;
         public TextView tvArtistName;
+        public ProgressBar pbArtistLoadingImage;
     }
 }

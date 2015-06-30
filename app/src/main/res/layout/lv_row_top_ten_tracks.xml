@@ -3,13 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     >
-
+    <ProgressBar
+        style="@style/listImage"
+        android:id="@+id/pbArtistLoadingImage" />
     <ImageView
         android:contentDescription="Album Cover"
         android:src="@drawable/ic_search_black_24dp"
         style="@style/listImage"
-        android:layout_width="@dimen/list_image_width"
-        android:layout_height="@dimen/list_image_height"
         android:id="@+id/ivAlbumImage" />
 
     <LinearLayout
