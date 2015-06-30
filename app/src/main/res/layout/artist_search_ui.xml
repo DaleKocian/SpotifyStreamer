@@ -12,10 +12,9 @@
         android:gravity="center">
 
         <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/pbSpotifyLoadin" />
+            android:id="@+id/pbSpotifyLoading" />
 
         <ImageView
             android:layout_margin="20dp"
