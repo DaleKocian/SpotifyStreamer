@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Pager;
 
-
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, AdapterView.OnItemClickListener {
     private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
@@ -38,8 +38,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private LinearLayout llInstructionScreen;
     private ListView lvListItems;
     private LinearLayout llProgressView;
+    private RelativeLayout rlLoadingScreen;
     public static final String NO_ARTISTS_FOUND = "No artists found!";
     private String searchString = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         lvListItems = (ListView) findViewById(R.id.lvListItems);
         llInstructionScreen = (LinearLayout) findViewById(R.id.llInstructionScreen);
         llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
+        rlLoadingScreen = (RelativeLayout) findViewById(R.id.rlLoadingScreen);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
         lvListItems.setOnItemClickListener(this);
@@ -66,7 +69,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         };
         artistSearchService = new ArtistSearchService(this, getArtistSearchResponseListener(lazyLoadListener));
         lvListItems.setOnScrollListener(lazyLoadListener);
-
     }
 
     private ArtistSearchService.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
@@ -74,6 +76,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             @Override
             public void onResponse(ArtistsPager result) {
                 Pager<Artist> artistPager = result.artists;
+                showResults();
                 if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
                     Toast.makeText(ArtistSearchActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
                 } else {
@@ -130,7 +133,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        List<SerializableArtist> artistList = (ArrayList<SerializableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
+        List<SerializableArtist> artistList = (ArrayList<SerializableArtist>) savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
         artistSearchResultsAdapter.addAll(artistList);
@@ -140,21 +143,16 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String artistName) {
+        showLoadingScreen();
         artistSearchService.searchArtist(artistName);
-        if (!searchString.isEmpty()) {
-            llInstructionScreen.setVisibility(View.GONE);
-            lvListItems.setVisibility(View.VISIBLE);
-        }
         return false;
     }
-
 
     @Override
     public boolean onQueryTextChange(String newText) {
         searchString = newText;
         if (searchString.isEmpty()) {
-            lvListItems.setVisibility(View.GONE);
-            llInstructionScreen.setVisibility(View.VISIBLE);
+            showInstructionScreen();
         }
         return false;
     }
@@ -165,5 +163,23 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
         topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, selectedArtist.id);
         startActivity(topTenTrackIntent);
+    }
+
+    private void showLoadingScreen() {
+        lvListItems.setVisibility(View.GONE);
+        llInstructionScreen.setVisibility(View.GONE);
+        rlLoadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void showInstructionScreen() {
+        rlLoadingScreen.setVisibility(View.GONE);
+        lvListItems.setVisibility(View.GONE);
+        llInstructionScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void showResults() {
+        rlLoadingScreen.setVisibility(View.GONE);
+        llInstructionScreen.setVisibility(View.GONE);
+        lvListItems.setVisibility(View.VISIBLE);
     }
 }
