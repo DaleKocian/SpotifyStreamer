@@ -25,7 +25,6 @@ import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.RetrofitError;
 
-
 public class TopTenTrackActivity extends AppCompatActivity {
     private static final String TAG = TopTenTrackActivity.class.getName();
     public static final String COUNTRY_PARAM_KEY = "country";
@@ -36,7 +35,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view_ui);
+        setContentView(R.layout.top_ten_tracks_ui);
         ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
         topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
         lvListItems.setAdapter(topTenTracksAdapter);
@@ -93,19 +92,4 @@ public class TopTenTrackActivity extends AppCompatActivity {
             }
         }
     }
-
-  /*  @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY,
-                (ArrayList<>) topTenTracksAdapter.getTrackList());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        List<Track> trackList = savedInstanceState.getParcelable(TOP_TEN_TRACKS_BUNDLE_KEY);
-        topTenTracksAdapter.addAll(trackList);
-        topTenTracksAdapter.notifyDataSetChanged();
-        super.onRestoreInstanceState(savedInstanceState);
-    }*/
 }

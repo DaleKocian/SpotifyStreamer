@@ -34,19 +34,22 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
     private ArtistSearchService artistSearchService;
+    private LinearLayout llInstructionScreen;
+    private ListView lvListItems;
     private LinearLayout llProgressView;
     public static final String NO_ARTISTS_FOUND = "No artists found!";
     private String searchString = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_view_ui);
+        setContentView(R.layout.artist_search_ui);
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
         }
-        ListView lvListItems = (ListView) findViewById(R.id.lvListItems);
+        lvListItems = (ListView) findViewById(R.id.lvListItems);
+        llInstructionScreen = (LinearLayout) findViewById(R.id.llInstructionScreen);
         llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
@@ -137,6 +140,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     @Override
     public boolean onQueryTextSubmit(String artistName) {
         artistSearchService.searchArtist(artistName);
+        if (!searchString.isEmpty()) {
+            llInstructionScreen.setVisibility(View.GONE);
+            lvListItems.setVisibility(View.VISIBLE);
+        }
         return false;
     }
 
@@ -144,6 +151,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     @Override
     public boolean onQueryTextChange(String newText) {
         searchString = newText;
+        if (searchString.isEmpty()) {
+            lvListItems.setVisibility(View.GONE);
+            llInstructionScreen.setVisibility(View.VISIBLE);
+        }
         return false;
     }
 
