@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -128,7 +129,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         List<SerializableArtist> artistList = (ArrayList<SerializableArtist>)savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
