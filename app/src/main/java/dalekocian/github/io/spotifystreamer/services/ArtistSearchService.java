@@ -2,10 +2,13 @@ package dalekocian.github.io.spotifystreamer.services;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
@@ -18,6 +21,7 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
  */
 public class ArtistSearchService {
 
+    private static final String TAG = ArtistSearchService.class.getName();
     private final Context context;
     private SpotifyService spotifyService;
     public static final String OFFSET_KEY = "offset";
@@ -27,12 +31,14 @@ public class ArtistSearchService {
     private int limit;
     private String artistName;
     private ResponseListener response;
+    private Stack<AsyncArtistSearch> artistSearchStack;
 
 
     public ArtistSearchService(Context context, ResponseListener response) {
         this.context = context;
         spotifyService = new SpotifyApi().getService();
         this.response = response;
+        artistSearchStack = new Stack<>();
     }
 
     public boolean searchArtistNext() {
@@ -51,11 +57,25 @@ public class ArtistSearchService {
         checkNetworkAndExecute(artistName);
     }
 
+    public void cancel() {
+        cancelPreviousSearch();
+    }
+
     private void checkNetworkAndExecute(String artistName) {
         if (Utils.hasInternetConnection(context)) {
-            new AsyncArtistSearch().execute(artistName);
+            cancelPreviousSearch();
+            artistSearchStack.addElement(new AsyncArtistSearch());
+            artistSearchStack.peek().execute(artistName);
         } else {
             Toast.makeText(context, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void cancelPreviousSearch() {
+        try {
+            artistSearchStack.pop().cancel(true);
+        } catch (EmptyStackException e) {
+            Log.w(TAG, e.getMessage());
         }
     }
 
@@ -76,6 +96,7 @@ public class ArtistSearchService {
 
         @Override
         protected void onPostExecute(ArtistsPager result) {
+            artistSearchStack.pop();
             response.onResponse(result);
         }
     }

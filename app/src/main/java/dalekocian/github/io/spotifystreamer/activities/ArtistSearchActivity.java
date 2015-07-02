@@ -165,6 +165,12 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         startActivity(topTenTrackIntent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        artistSearchService.cancel();
+    }
+
     private void showLoadingScreen() {
         lvListItems.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.GONE);
