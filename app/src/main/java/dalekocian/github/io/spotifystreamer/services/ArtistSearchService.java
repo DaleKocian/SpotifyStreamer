@@ -75,7 +75,7 @@ public class ArtistSearchService {
         try {
             artistSearchStack.pop().cancel(true);
         } catch (EmptyStackException e) {
-            Log.w(TAG, e.getMessage());
+            Log.d(TAG, "No current searches in the stack");
         }
     }
 

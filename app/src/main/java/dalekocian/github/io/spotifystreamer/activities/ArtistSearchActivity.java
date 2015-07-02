@@ -25,6 +25,7 @@ import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
 import dalekocian.github.io.spotifystreamer.model.SerializableArtist;
 import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Pager;
@@ -33,6 +34,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
+    public static final String RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY = "RESOURCE_ID_VISIBLE_LAYOUT";
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
     private ArtistSearchService artistSearchService;
     private LinearLayout llInstructionScreen;
@@ -128,6 +130,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         }
         outState.putSerializable(ARTISTS_BUNDLE_KEY, serializableArtists);
         outState.putCharSequence(SEARCH_STRING_BUNDLE_KEY, searchString);
+        outState.putInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY, getResourceIdForVisibleLayout());
         super.onSaveInstanceState(outState);
     }
 
@@ -135,9 +138,13 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         List<SerializableArtist> artistList = (ArrayList<SerializableArtist>) savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
+        int resourceId = savedInstanceState.getInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
         artistSearchResultsAdapter.addAll(artistList);
         artistSearchResultsAdapter.notifyDataSetChanged();
+        if (lvListItems.getId() == resourceId) {
+            showResults();
+        }
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -169,6 +176,13 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     protected void onDestroy() {
         super.onDestroy();
         artistSearchService.cancel();
+    }
+
+    private int getResourceIdForVisibleLayout() {
+        if (Utils.isVisible(lvListItems)) {
+            return lvListItems.getId();
+        }
+        return llInstructionScreen.getId();
     }
 
     private void showLoadingScreen() {

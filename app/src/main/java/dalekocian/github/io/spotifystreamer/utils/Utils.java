@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import java.util.Collection;
 
@@ -38,6 +39,9 @@ public class Utils {
         return collection == null || collection.size() == 0;
     }
 
+    public static boolean isVisible(View view) {
+        return view.getVisibility() == View.VISIBLE;
+    }
 
     public static String emptyToNull(@Nullable String string) {
         return isNullOrEmpty(string) ? null : string;
