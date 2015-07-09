@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:paddingTop="100dp">
+              android:paddingTop="@dimen/top_distance">
 
     <TextView
         android:id="@+id/tvNoResultsFound"
@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="@string/no_results_description"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 </LinearLayout>

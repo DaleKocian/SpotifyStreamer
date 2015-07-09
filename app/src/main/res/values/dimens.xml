@@ -3,4 +3,10 @@
     <dimen name="list_image_width">65dp</dimen>
     <dimen name="list_image_height">65dp</dimen>
     <dimen name="list_image_margin">15dp</dimen>
+    <dimen name="top_distance">50dp</dimen>
+    <dimen name="main_progress_bar_width">100dp</dimen>
+    <dimen name="main_progress_bar_height">100dp</dimen>
+    <dimen name="spotify_icon_width">60dp</dimen>
+    <dimen name="spotify_icon_height">60dp</dimen>
+    <dimen name="spotify_icon_margin">20dp</dimen>
 </resources>
