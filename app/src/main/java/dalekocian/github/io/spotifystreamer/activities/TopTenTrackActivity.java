@@ -51,8 +51,9 @@ public class TopTenTrackActivity extends AppCompatActivity {
 
     private void setUpTextViewForNoResultsFound() {
         ((TextView) llNoResultsFound.findViewById(R.id.tvNoResultsFound)).setText(
-                Constants.NO_RESULTS + "\"" + getIntent().getStringExtra(ExtraKeys.ARTIST_NAME) + "\"");
-        ((TextView) llNoResultsFound.findViewById(R.id.tvDescription)).setText("Please try another artist.");
+                Constants.NO_RESULTS + Constants.SINGLE_QUOTE +
+                        getIntent().getStringExtra(ExtraKeys.ARTIST_NAME) + Constants.SINGLE_QUOTE);
+        ((TextView) llNoResultsFound.findViewById(R.id.tvDescription)).setText(Constants.PLEASE_TRY_ANOTHER_ARTIST);
     }
 
     private TopTenTrackSearchService.ResponseListener getTopTenTrackSearchResponseListener() {

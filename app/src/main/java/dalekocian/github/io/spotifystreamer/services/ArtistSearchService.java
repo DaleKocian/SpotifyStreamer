@@ -22,6 +22,7 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 public class ArtistSearchService {
 
     private static final String TAG = ArtistSearchService.class.getName();
+    public static final String NO_CURRENT_SEARCHES_IN_THE_STACK = "No current searches in the stack";
     private final Context context;
     private SpotifyService spotifyService;
     public static final String OFFSET_KEY = "offset";
@@ -100,7 +101,7 @@ public class ArtistSearchService {
         try {
             artistSearchStack.pop().cancel(true);
         } catch (EmptyStackException e) {
-            Log.d(TAG, "No current searches in the stack");
+            Log.d(TAG, NO_CURRENT_SEARCHES_IN_THE_STACK);
         }
     }
 

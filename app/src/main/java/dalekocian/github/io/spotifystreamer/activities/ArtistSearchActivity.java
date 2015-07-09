@@ -232,7 +232,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private void showNoResults() {
-        tvNoResultsFound.setText(Constants.NO_RESULTS + "\"" + searchString + "\"");
+        tvNoResultsFound.setText(Constants.NO_RESULTS + Constants.SINGLE_QUOTE + searchString + Constants.SINGLE_QUOTE);
         rlLoadingScreen.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.GONE);
         lvListItems.setVisibility(View.GONE);

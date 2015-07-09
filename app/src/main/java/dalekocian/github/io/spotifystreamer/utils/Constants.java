@@ -6,4 +6,6 @@ package dalekocian.github.io.spotifystreamer.utils;
 public class Constants {
     public static final String NETWORK_CONNECTION_ERROR = "There is a problem with your data connection. Please check your network settings.";
     public static final String NO_RESULTS = "No Results found for ";
+    public static final String SINGLE_QUOTE = "\"";
+    public static final String PLEASE_TRY_ANOTHER_ARTIST = "Please try another artist.";
 }
