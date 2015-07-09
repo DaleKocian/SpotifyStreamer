@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
@@ -28,21 +27,35 @@ public class ParcelableArtist extends Artist implements Parcelable {
     }
 
     public ParcelableArtist(Artist artist) {
-        this.followers = artist.followers;
-        this.genres = artist.genres;
-        this.images = artist.images;
-        this.popularity = artist.popularity;
-        this.external_urls = artist.external_urls;
-        this.href = artist.href;
-        this.type = artist.type;
-        this.uri = artist.uri;
+        if (artist != null) {
+            this.followers = artist.followers;
+            this.genres = artist.genres;
+            this.images = artist.images;
+            this.popularity = artist.popularity;
+            this.external_urls = artist.external_urls;
+            this.href = artist.href;
+            this.type = artist.type;
+            this.uri = artist.uri;
+        }
+    }
+
+    protected ParcelableArtist(Parcel in) {
+        this.followers = in.readParcelable(ParcelableFollowers.class.getClassLoader());
+        this.genres = in.createStringArrayList();
+        this.images = new ArrayList<>();
+        ArrayList<ParcelableImage> arrayList = new ArrayList<>();
+        in.readList(arrayList, ParcelableImage.class.getClassLoader());
+        this.images = new ArrayList<>(arrayList.size());
+        for (ParcelableImage parcelableImage : arrayList) {
+            this.images.add(parcelableImage.getImage());
+        }
+        this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
     @Override
     public int describeContents() {
         return 0;
     }
-
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -58,20 +71,6 @@ public class ParcelableArtist extends Artist implements Parcelable {
         dest.writeString(this.href);
         dest.writeString(this.type);
         dest.writeString(this.uri);
-    }
-
-    protected ParcelableArtist(Parcel in) {
-        this.followers = in.readParcelable(ParcelableFollowers.class.getClassLoader());
-        this.genres = in.createStringArrayList();
-        this.images = new ArrayList<>();
-        ArrayList<ParcelableImage> arrayList = new ArrayList<>();
-        in.readList(arrayList, ParcelableImage.class.getClassLoader());
-        this.images = new ArrayList<>(arrayList.size());
-        for (ParcelableImage parcelableImage : arrayList) {
-            this.images.add(parcelableImage.getImage());
-        }
-        in.readList(this.images, List.class.getClassLoader());
-        this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
     public Artist getArtist() {

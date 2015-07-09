@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
@@ -16,44 +15,40 @@ import kaaes.spotify.webapi.android.models.Track;
  * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableTrack extends Track implements Parcelable {
-    public List<ArtistSimple> artists;
-    public List<String> available_markets;
-    public Boolean is_playable;
-    public LinkedTrack linked_from;
-    public int disc_number;
-    public long duration_ms;
-    public boolean explicit;
-    public Map<String, String> external_urls;
-    public String href;
-    public String id;
-    public String name;
-    public String preview_url;
-    public int track_number;
-    public String type;
-    public String uri;
+    public static final Creator<ParcelableTrack> CREATOR = new Creator<ParcelableTrack>() {
+        public ParcelableTrack createFromParcel(Parcel source) {
+            return new ParcelableTrack(source);
+        }
+
+        public ParcelableTrack[] newArray(int size) {
+            return new ParcelableTrack[size];
+        }
+    };
 
     public ParcelableTrack() {
     }
 
     public ParcelableTrack(Track track) {
-        this.album = track.album;
-        this.external_ids = track.external_ids;
-        this.popularity = track.popularity;
-        this.artists = track.artists;
-        this.available_markets = track.available_markets;
-        this.is_playable = track.is_playable;
-        this.linked_from = track.linked_from;
-        this.disc_number = track.disc_number;
-        this.duration_ms = track.duration_ms;
-        this.explicit = track.explicit;
-        this.external_urls = track.external_urls;
-        this.href = track.href;
-        this.id = track.id;
-        this.name = track.name;
-        this.preview_url = track.preview_url;
-        this.track_number = track.track_number;
-        this.type = track.type;
-        this.uri = track.uri;
+        if (track != null) {
+            this.album = track.album;
+            this.external_ids = track.external_ids;
+            this.popularity = track.popularity;
+            this.artists = track.artists;
+            this.available_markets = track.available_markets;
+            this.is_playable = track.is_playable;
+            this.linked_from = track.linked_from;
+            this.disc_number = track.disc_number;
+            this.duration_ms = track.duration_ms;
+            this.explicit = track.explicit;
+            this.external_urls = track.external_urls;
+            this.href = track.href;
+            this.id = track.id;
+            this.name = track.name;
+            this.preview_url = track.preview_url;
+            this.track_number = track.track_number;
+            this.type = track.type;
+            this.uri = track.uri;
+        }
     }
 
     protected ParcelableTrack(Parcel in) {
@@ -111,17 +106,6 @@ public class ParcelableTrack extends Track implements Parcelable {
         dest.writeString(type);
         dest.writeString(uri);
     }
-
-
-    public static final Creator<ParcelableTrack> CREATOR = new Creator<ParcelableTrack>() {
-        public ParcelableTrack createFromParcel(Parcel source) {
-            return new ParcelableTrack(source);
-        }
-
-        public ParcelableTrack[] newArray(int size) {
-            return new ParcelableTrack[size];
-        }
-    };
 
     public Track getTrack() {
         Track track = new Track();

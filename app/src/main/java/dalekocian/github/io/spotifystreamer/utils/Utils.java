@@ -50,8 +50,8 @@ public class Utils {
         return isNullOrEmpty(string) ? null : string;
     }
 
-    public static Byte getByteFromBoolean(boolean bool) {
-        return (byte) (bool ? 1 : 0);
+    public static Byte getByteFromBoolean(Boolean bool) {
+        return (byte) ((bool != null && bool) ? 1 : 0);
     }
 
     public static Bundle createBundleFromMap(Map<String, String> map) {

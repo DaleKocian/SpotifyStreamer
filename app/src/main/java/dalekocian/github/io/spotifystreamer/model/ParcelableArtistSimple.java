@@ -10,6 +10,39 @@ import kaaes.spotify.webapi.android.models.ArtistSimple;
  * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
+    public static final Creator<ParcelableArtistSimple> CREATOR = new Creator<ParcelableArtistSimple>() {
+        public ParcelableArtistSimple createFromParcel(Parcel source) {
+            return new ParcelableArtistSimple(source);
+        }
+
+        public ParcelableArtistSimple[] newArray(int size) {
+            return new ParcelableArtistSimple[size];
+        }
+    };
+
+    public ParcelableArtistSimple() {
+    }
+
+    public ParcelableArtistSimple(ArtistSimple artistSimple) {
+        if (artistSimple != null) {
+            this.external_urls = artistSimple.external_urls;
+            this.href = artistSimple.href;
+            this.id = artistSimple.id;
+            this.name = artistSimple.name;
+            this.type = artistSimple.type;
+            this.uri = artistSimple.uri;
+        }
+    }
+
+    protected ParcelableArtistSimple(Parcel in) {
+        this.external_urls = Utils.createMapFromBundle(in.readBundle());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -24,37 +57,6 @@ public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
         dest.writeString(this.type);
         dest.writeString(this.uri);
     }
-
-    public ParcelableArtistSimple() {
-    }
-
-    public ParcelableArtistSimple(ArtistSimple artistSimple) {
-        this.external_urls = artistSimple.external_urls;
-        this.href = artistSimple.href;
-        this.id = artistSimple.id;
-        this.name = artistSimple.name;
-        this.type = artistSimple.type;
-        this.uri = artistSimple.uri;
-    }
-
-    protected ParcelableArtistSimple(Parcel in) {
-        this.external_urls = Utils.createMapFromBundle(in.readBundle());
-        this.href = in.readString();
-        this.id = in.readString();
-        this.name = in.readString();
-        this.type = in.readString();
-        this.uri = in.readString();
-    }
-
-    public static final Creator<ParcelableArtistSimple> CREATOR = new Creator<ParcelableArtistSimple>() {
-        public ParcelableArtistSimple createFromParcel(Parcel source) {
-            return new ParcelableArtistSimple(source);
-        }
-
-        public ParcelableArtistSimple[] newArray(int size) {
-            return new ParcelableArtistSimple[size];
-        }
-    };
 
     public ArtistSimple getArtistSimple() {
         ArtistSimple artistSimple = new ArtistSimple();

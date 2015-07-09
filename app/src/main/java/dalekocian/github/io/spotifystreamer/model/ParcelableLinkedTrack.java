@@ -3,8 +3,6 @@ package dalekocian.github.io.spotifystreamer.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Map;
-
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.LinkedTrack;
 
@@ -12,11 +10,36 @@ import kaaes.spotify.webapi.android.models.LinkedTrack;
  * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
-    public Map<String, String> external_urls;
-    public String href;
-    public String id;
-    public String type;
-    public String uri;
+    public static final Creator<ParcelableLinkedTrack> CREATOR = new Creator<ParcelableLinkedTrack>() {
+        public ParcelableLinkedTrack createFromParcel(Parcel source) {
+            return new ParcelableLinkedTrack(source);
+        }
+
+        public ParcelableLinkedTrack[] newArray(int size) {
+            return new ParcelableLinkedTrack[size];
+        }
+    };
+
+    public ParcelableLinkedTrack() {
+    }
+
+    public ParcelableLinkedTrack(LinkedTrack linkedTrack) {
+        if (linkedTrack != null) {
+            this.external_urls = linkedTrack.external_urls;
+            this.href = linkedTrack.href;
+            this.id = linkedTrack.id;
+            this.type = linkedTrack.type;
+            this.uri = linkedTrack.uri;
+        }
+    }
+
+    protected ParcelableLinkedTrack(Parcel in) {
+        this.external_urls = Utils.createMapFromBundle(in.readBundle());
+        this.href = in.readString();
+        this.id = in.readString();
+        this.type = in.readString();
+        this.uri = in.readString();
+    }
 
     @Override
     public int describeContents() {
@@ -31,33 +54,4 @@ public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
         dest.writeString(this.type);
         dest.writeString(this.uri);
     }
-
-    public ParcelableLinkedTrack() {
-    }
-
-    public ParcelableLinkedTrack(LinkedTrack linkedTrack) {
-        this.external_urls = linkedTrack.external_urls;
-        this.href = linkedTrack.href;
-        this.id = linkedTrack.id;
-        this.type = linkedTrack.type;
-        this.uri = linkedTrack.uri;
-    }
-
-    protected ParcelableLinkedTrack(Parcel in) {
-        this.external_urls = Utils.createMapFromBundle(in.readBundle());
-        this.href = in.readString();
-        this.id = in.readString();
-        this.type = in.readString();
-        this.uri = in.readString();
-    }
-
-    public static final Creator<ParcelableLinkedTrack> CREATOR = new Creator<ParcelableLinkedTrack>() {
-        public ParcelableLinkedTrack createFromParcel(Parcel source) {
-            return new ParcelableLinkedTrack(source);
-        }
-
-        public ParcelableLinkedTrack[] newArray(int size) {
-            return new ParcelableLinkedTrack[size];
-        }
-    };
 }
