@@ -10,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -132,6 +133,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         searchView.setOnQueryTextListener(this);
         searchView.setIconifiedByDefault(false);
         searchView.setQuery(searchString, false);
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         return true;
     }
 
