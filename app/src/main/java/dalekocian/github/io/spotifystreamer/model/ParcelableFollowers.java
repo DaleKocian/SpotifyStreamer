@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import kaaes.spotify.webapi.android.models.Followers;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableFollowers extends Followers implements Parcelable {
     public ParcelableFollowers() {

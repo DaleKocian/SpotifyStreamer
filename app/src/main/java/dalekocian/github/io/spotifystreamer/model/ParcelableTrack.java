@@ -13,7 +13,7 @@ import kaaes.spotify.webapi.android.models.LinkedTrack;
 import kaaes.spotify.webapi.android.models.Track;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableTrack extends Track implements Parcelable {
     public List<ArtistSimple> artists;

@@ -12,7 +12,7 @@ import java.util.Map;
 import kaaes.spotify.webapi.android.models.AlbumSimple;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableAlbumSimple extends AlbumSimple implements Parcelable {
 

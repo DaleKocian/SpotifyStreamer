@@ -9,7 +9,7 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.LinkedTrack;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
     public Map<String, String> external_urls;

@@ -3,7 +3,7 @@ package dalekocian.github.io.spotifystreamer.listeners;
 import android.widget.AbsListView;
 
 /**
- * Created by k557782 on 6/25/2015.
+ * Created by Dale Kocian on 6/25/2015.
  */
 public abstract class LazyLoadListener implements AbsListView.OnScrollListener {
     private boolean isLoading = false;

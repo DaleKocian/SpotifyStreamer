@@ -7,7 +7,7 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
     @Override

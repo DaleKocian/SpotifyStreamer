@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import kaaes.spotify.webapi.android.models.Image;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class ParcelableImage extends Image implements Parcelable {
     public ParcelableImage() {

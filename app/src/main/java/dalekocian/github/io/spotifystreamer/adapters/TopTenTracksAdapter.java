@@ -20,7 +20,7 @@ import kaaes.spotify.webapi.android.models.AlbumSimple;
 import kaaes.spotify.webapi.android.models.Track;
 
 /**
- * Created by k557782 on 6/10/2015.
+ * Created by Dale Kocian on 6/10/2015.
  */
 public class TopTenTracksAdapter extends ArrayAdapter<Track> {
     private final Activity activity;

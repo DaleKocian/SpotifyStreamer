@@ -17,14 +17,14 @@ import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 /**
- * Created by k557782 on 6/25/2015.
+ * Created by Dale Kocian on 6/25/2015.
  */
 public class ArtistSearchService {
 
     private static final String TAG = ArtistSearchService.class.getName();
     public static final String NO_CURRENT_SEARCHES_IN_THE_STACK = "No current searches in the stack";
     private final Context context;
-    private SpotifyService spotifyService;
+    private final SpotifyService spotifyService;
     public static final String OFFSET_KEY = "offset";
     public static final String LIMIT_KEY = "limit";
     private int total;
@@ -32,7 +32,7 @@ public class ArtistSearchService {
     private int limit;
     private String artistName;
     private ResponseListener response;
-    private Stack<AsyncArtistSearch> artistSearchStack;
+    private final Stack<AsyncArtistSearch> artistSearchStack;
     private Callback callback;
 
     private static final Callback EMPTY_CALLBACK =  new Callback() {

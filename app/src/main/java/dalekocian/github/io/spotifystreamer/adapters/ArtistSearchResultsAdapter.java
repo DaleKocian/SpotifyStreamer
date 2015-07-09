@@ -19,7 +19,7 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
 
 /**
- * Created by k557782 on 6/10/2015.
+ * Created by Dale Kocian on 6/10/2015.
  */
 public class ArtistSearchResultsAdapter extends ArrayAdapter<Artist> {
     private final Activity activity;

@@ -16,10 +16,10 @@ import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.RetrofitError;
 
 /**
- * Created by k557782 on 7/9/2015.
+ * Created by Dale Kocian on 7/9/2015.
  */
 public class TopTenTrackSearchService {
-    private Context context;
+    private final Context context;
     private Callback callback;
     private ResponseListener response;
 
