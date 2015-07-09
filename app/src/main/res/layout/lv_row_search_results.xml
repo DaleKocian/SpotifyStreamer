@@ -11,13 +11,13 @@
     <ImageView
         style="@style/listImage"
         android:id="@+id/ivArtistImage"
-        android:contentDescription="Artist Image" />
+        android:contentDescription="@string/cd_artist_image" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Artist Name"
+        android:text="@string/artist_name"
         android:id="@+id/tvArtistName"
         android:layout_gravity="center_vertical"
         android:layout_toRightOf="@+id/ivArtistImage"

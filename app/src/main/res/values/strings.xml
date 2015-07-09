@@ -7,4 +7,15 @@
     <string name="title_activity_preference">Settings</string>
     <string name="country_code_list_pref_key">country_code</string>
     <string name="default_country_code">US</string>
+    <string name="cd_search_icon">Search Icon</string>
+    <string name="artist_search_instruction">Find your favourite artist</string>
+    <string name="artist_search_detail_instruction">Search for artist, then click on row to see artist\'s top 10 tracks.</string>
+    <string name="loading">Loading...</string>
+    <string name="cd_artist_image">Artist Image</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="cd_album_cover">Album Cover</string>
+    <string name="album_name">Album Name</string>
+    <string name="track_name">Track Name</string>
+    <string name="no_results_description">Please check you have the right spelling, or a try a different artist.</string>
+    <string name="cd_spotify_icon">Spotify Icon</string>
 </resources>

@@ -20,14 +20,14 @@
             android:id="@+id/ivSearchIcon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:contentDescription="Search Icon"
+            android:contentDescription="@string/cd_search_icon"
             android:src="@drawable/ic_search_black_24dp" />
 
         <TextView
             android:id="@+id/tvDescriptionInstruction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Find your favourite artist"
+            android:text="@string/artist_search_instruction"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Search for artist, then click on row to see artist's top 10 tracks."
+            android:text="@string/artist_search_detail_instruction"
             android:id="@+id/rvDetailDescription"
             android:gravity="center" />
     </LinearLayout>
@@ -71,7 +71,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading..."
+            android:text="@string/loading"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_gravity="center_vertical"
             />

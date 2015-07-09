@@ -17,5 +17,5 @@
         android:layout_height="60dp"
         android:layout_margin="20dp"
         android:src="@drawable/spotify_default_cover"
-        android:contentDescription="Spotify Icon" />
+        android:contentDescription="@string/cd_spotify_icon" />
 </RelativeLayout>
