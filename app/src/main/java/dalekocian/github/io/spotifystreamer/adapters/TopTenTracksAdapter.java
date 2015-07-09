@@ -52,15 +52,24 @@ public class TopTenTracksAdapter extends ArrayAdapter<Track> {
         }
         Track track = trackList.get(position);
         AlbumSimple album = track.album;
-        if (album.images != null && album.images.size() > 0) {
+        if (hasImageUrl(album)) {
             Picasso.with(activity).load(album.images.get(0).url).into(viewContainer.ivAlbumImage,
                     new ImageLoadedCallback(viewContainer.pbArtistLoadingImage));
         } else {
             viewContainer.ivAlbumImage.setImageResource(R.drawable.spotify_default_cover);
         }
         viewContainer.tvTrackName.setText(Utils.emptyToNull(track.name));
-        viewContainer.tvAlbumName.setText(Utils.emptyToNull(album.name));
+        viewContainer.tvAlbumName.setText(getNameOfAlbum(album));
         return rowView;
+    }
+
+    private boolean hasImageUrl(AlbumSimple album) {
+        return album != null && !Utils.isNullOrEmpty(album.images) && album.images.get(0) != null
+                && !Utils.isNullOrEmpty(album.images.get(0).url);
+    }
+
+    private String getNameOfAlbum(AlbumSimple album) {
+        return album == null ? "" : Utils.emptyToNull(album.name);
     }
 
     public List<Track> getTrackList() {
