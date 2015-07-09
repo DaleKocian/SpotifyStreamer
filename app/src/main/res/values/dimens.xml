@@ -9,4 +9,5 @@
     <dimen name="spotify_icon_width">60dp</dimen>
     <dimen name="spotify_icon_height">60dp</dimen>
     <dimen name="spotify_icon_margin">20dp</dimen>
+    <dimen name="default_view_icon_width_height">100dp</dimen>
 </resources>

@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/ivSearchIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/default_view_icon_width_height"
+            android:layout_height="@dimen/default_view_icon_width_height"
             android:contentDescription="@string/cd_search_icon"
             android:src="@drawable/ic_search_black_24dp" />
 
