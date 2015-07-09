@@ -9,14 +9,12 @@ import kaaes.spotify.webapi.android.models.Followers;
  * Created by k557782 on 7/9/2015.
  */
 public class ParcelableFollowers extends Followers implements Parcelable {
-    private String href;
-    private int total;
     public ParcelableFollowers() {
     }
 
     public ParcelableFollowers(Followers followers) {
-        href = followers.href;
-        total = followers.total;
+        this.href = followers.href;
+        this.total = followers.total;
     }
 
     @Override
@@ -44,20 +42,4 @@ public class ParcelableFollowers extends Followers implements Parcelable {
             return new ParcelableFollowers[size];
         }
     };
-
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
 }

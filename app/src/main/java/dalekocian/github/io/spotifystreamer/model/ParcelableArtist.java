@@ -6,19 +6,14 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.Followers;
 import kaaes.spotify.webapi.android.models.Image;
 
 /**
  * Created by dkocian on 6/26/15.
  */
 public class ParcelableArtist extends Artist implements Parcelable {
-    private ParcelableFollowers parcelableFollowers;
-    private List<String> genres;
-    private List<Image> images;
-    private Integer popularity;
-
     public static final Creator<ParcelableArtist> CREATOR = new Creator<ParcelableArtist>() {
         public ParcelableArtist createFromParcel(Parcel source) {
             return new ParcelableArtist(source);
@@ -33,11 +28,14 @@ public class ParcelableArtist extends Artist implements Parcelable {
     }
 
     public ParcelableArtist(Artist artist) {
-        parcelableFollowers = new ParcelableFollowers(artist.followers);
-        genres = artist.genres;
-        images = artist.images;
-        popularity = artist.popularity;
-        followers = parcelableFollowers;
+        this.followers = artist.followers;
+        this.genres = artist.genres;
+        this.images = artist.images;
+        this.popularity = artist.popularity;
+        this.external_urls = artist.external_urls;
+        this.href = artist.href;
+        this.type = artist.type;
+        this.uri = artist.uri;
     }
 
     @Override
@@ -48,57 +46,44 @@ public class ParcelableArtist extends Artist implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.parcelableFollowers, 0);
+        dest.writeParcelable(new ParcelableFollowers(followers), 0);
         dest.writeStringList(this.genres);
-        dest.writeList(this.images);
+        ArrayList<ParcelableImage> arrayList = new ArrayList<>(this.images.size());
+        for (Image image : images) {
+            arrayList.add(new ParcelableImage(image));
+        }
+        dest.writeList(arrayList);
         dest.writeValue(this.popularity);
+        dest.writeBundle(Utils.createBundleFromMap(external_urls));
+        dest.writeString(this.href);
+        dest.writeString(this.type);
+        dest.writeString(this.uri);
     }
 
     protected ParcelableArtist(Parcel in) {
-        this.parcelableFollowers = in.readParcelable(ParcelableFollowers.class.getClassLoader());
-        followers = parcelableFollowers;
+        this.followers = in.readParcelable(ParcelableFollowers.class.getClassLoader());
         this.genres = in.createStringArrayList();
         this.images = new ArrayList<>();
+        ArrayList<ParcelableImage> arrayList = new ArrayList<>();
+        in.readList(arrayList, ParcelableImage.class.getClassLoader());
+        this.images = new ArrayList<>(arrayList.size());
+        for (ParcelableImage parcelableImage : arrayList) {
+            this.images.add(parcelableImage.getImage());
+        }
         in.readList(this.images, List.class.getClassLoader());
         this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    public Followers getFollowers() {
-        if (parcelableFollowers != null && !parcelableFollowers.equals(followers)) {
-            followers = parcelableFollowers;
-        } else if (parcelableFollowers == null && followers != null) {
-            parcelableFollowers = new ParcelableFollowers(followers);
-            followers = parcelableFollowers;
-        }
-        return followers;
-    }
-
-    public void setFollowers(Followers followers) {
-        this.parcelableFollowers = new ParcelableFollowers(followers);
-        this.followers = parcelableFollowers;
-    }
-
-    public List<String> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
-    }
-
-    public List<Image> getImages() {
-        return images;
-    }
-
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
-
-    public Integer getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Integer popularity) {
-        this.popularity = popularity;
+    public Artist getArtist() {
+        Artist artist = new Artist();
+        artist.followers = this.followers;
+        artist.genres = this.genres;
+        artist.images = this.images;
+        artist.popularity = this.popularity;
+        artist.external_urls = this.external_urls;
+        artist.href = this.href;
+        artist.type = this.type;
+        artist.uri = this.uri;
+        return artist;
     }
 }

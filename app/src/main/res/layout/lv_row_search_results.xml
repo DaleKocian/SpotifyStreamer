@@ -21,5 +21,6 @@
         android:id="@+id/tvArtistName"
         android:layout_gravity="center_vertical"
         android:layout_toRightOf="@+id/ivArtistImage"
+        android:layout_toEndOf="@+id/ivArtistImage"
         android:layout_centerVertical="true" />
 </RelativeLayout>

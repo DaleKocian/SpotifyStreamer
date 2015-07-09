@@ -18,12 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
-import dalekocian.github.io.spotifystreamer.model.SerializableArtist;
+import dalekocian.github.io.spotifystreamer.model.ParcelableArtist;
 import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
 import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
@@ -145,11 +144,11 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        ArrayList<SerializableArtist> serializableArtists = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
+        ArrayList<ParcelableArtist> parcelableArtistArrayList = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
         for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
-            serializableArtists.add(new SerializableArtist(artist));
+            parcelableArtistArrayList.add(new ParcelableArtist(artist));
         }
-        outState.putSerializable(ARTISTS_BUNDLE_KEY, serializableArtists);
+        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, parcelableArtistArrayList);
         outState.putCharSequence(SEARCH_STRING_BUNDLE_KEY, searchString);
         outState.putInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY, getResourceIdForVisibleLayout());
         super.onSaveInstanceState(outState);
@@ -157,11 +156,13 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        List<SerializableArtist> artistList = (ArrayList<SerializableArtist>) savedInstanceState.getSerializable(ARTISTS_BUNDLE_KEY);
+        ArrayList<ParcelableArtist> parcelableArrayList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         int resourceId = savedInstanceState.getInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY);
         artistSearchResultsAdapter.clear();
-        artistSearchResultsAdapter.addAll(artistList);
+        for (ParcelableArtist artist : parcelableArrayList) {
+            artistSearchResultsAdapter.add(artist.getArtist());
+        }
         artistSearchResultsAdapter.notifyDataSetChanged();
         if (lvListItems.getId() == resourceId) {
             showResults();

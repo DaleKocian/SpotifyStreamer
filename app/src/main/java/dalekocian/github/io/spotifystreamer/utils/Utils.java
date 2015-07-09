@@ -50,6 +50,10 @@ public class Utils {
         return isNullOrEmpty(string) ? null : string;
     }
 
+    public static Byte getByteFromBoolean(boolean bool) {
+        return (byte) (bool ? 1 : 0);
+    }
+
     public static Bundle createBundleFromMap(Map<String, String> map) {
         Bundle bundle = new Bundle();
         for (Map.Entry<String, String> entry : map.entrySet()) {
