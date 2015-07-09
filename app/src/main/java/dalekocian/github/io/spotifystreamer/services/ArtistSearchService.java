@@ -32,13 +32,26 @@ public class ArtistSearchService {
     private String artistName;
     private ResponseListener response;
     private Stack<AsyncArtistSearch> artistSearchStack;
+    private Callback callback;
 
+    private static final Callback EMPTY_CALLBACK =  new Callback() {
+        @Override
+        public void onPreExecute() {
+
+        }
+
+        @Override
+        public void onPostExecute() {
+
+        }
+    };
 
     public ArtistSearchService(Context context, ResponseListener response) {
         this.context = context;
         spotifyService = new SpotifyApi().getService();
         this.response = response;
         artistSearchStack = new Stack<>();
+        callback = EMPTY_CALLBACK;
     }
 
     public boolean searchArtistNext() {
@@ -46,7 +59,7 @@ public class ArtistSearchService {
             return false;
         }
         offset += limit;
-        checkNetworkAndExecute(artistName);
+        checkNetworkAndExecute(artistName, false);
         return true;
     }
 
@@ -62,13 +75,25 @@ public class ArtistSearchService {
     }
 
     private void checkNetworkAndExecute(String artistName) {
+        checkNetworkAndExecute(artistName, true);
+    }
+
+    private void checkNetworkAndExecute(String artistName, boolean isFirstCall) {
         if (Utils.hasInternetConnection(context)) {
+            if (isFirstCall) {
+                callback.onPreExecute();
+            }
             cancelPreviousSearch();
             artistSearchStack.addElement(new AsyncArtistSearch());
             artistSearchStack.peek().execute(artistName);
         } else {
             Toast.makeText(context, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public ArtistSearchService setCallback(Callback callback) {
+        this.callback = callback;
+        return this;
     }
 
     private void cancelPreviousSearch() {
@@ -96,9 +121,15 @@ public class ArtistSearchService {
 
         @Override
         protected void onPostExecute(ArtistsPager result) {
+            callback.onPostExecute();
             artistSearchStack.pop();
             response.onResponse(result);
         }
+    }
+
+    public interface Callback {
+        void onPreExecute();
+        void onPostExecute();
     }
 
     public interface ResponseListener {

@@ -38,6 +38,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
     private ArtistSearchService artistSearchService;
     private LinearLayout llInstructionScreen;
+    private LinearLayout llNoResultsFound;
     private ListView lvListItems;
     private LinearLayout llProgressView;
     private RelativeLayout rlLoadingScreen;
@@ -57,6 +58,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         llInstructionScreen = (LinearLayout) findViewById(R.id.llInstructionScreen);
         llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
         rlLoadingScreen = (RelativeLayout) findViewById(R.id.rlLoadingScreen);
+        llNoResultsFound = (LinearLayout) findViewById(R.id.llNoResultsFound);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
         lvListItems.setOnItemClickListener(this);
@@ -69,8 +71,23 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
                 }
             }
         };
-        artistSearchService = new ArtistSearchService(this, getArtistSearchResponseListener(lazyLoadListener));
+        artistSearchService = new ArtistSearchService(this, getArtistSearchResponseListener(lazyLoadListener))
+                .setCallback(getArtistSearchCallback());
         lvListItems.setOnScrollListener(lazyLoadListener);
+    }
+
+    private ArtistSearchService.Callback getArtistSearchCallback() {
+        return new ArtistSearchService.Callback() {
+            @Override
+            public void onPreExecute() {
+                showLoadingScreen();
+            }
+
+            @Override
+            public void onPostExecute() {
+
+            }
+        };
     }
 
     private ArtistSearchService.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
@@ -80,7 +97,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
                 Pager<Artist> artistPager = result.artists;
                 showResults();
                 if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
-                    Toast.makeText(ArtistSearchActivity.this, NO_ARTISTS_FOUND, Toast.LENGTH_SHORT).show();
+                    showNoResults();
                 } else {
                     artistSearchService.setTotal(artistPager.total);
                     updateArrayAdapter(artistPager);
@@ -150,16 +167,16 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextSubmit(String artistName) {
-        showLoadingScreen();
-        artistSearchService.searchArtist(artistName);
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        searchString = newText;
+    public boolean onQueryTextChange(String searchString) {
+        this.searchString = searchString;
         if (searchString.isEmpty()) {
             showInstructionScreen();
+        } else {
+            artistSearchService.searchArtist(searchString);
         }
         return false;
     }
@@ -188,18 +205,28 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private void showLoadingScreen() {
         lvListItems.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.GONE);
+        llNoResultsFound.setVisibility(View.GONE);
         rlLoadingScreen.setVisibility(View.VISIBLE);
     }
 
     private void showInstructionScreen() {
         rlLoadingScreen.setVisibility(View.GONE);
         lvListItems.setVisibility(View.GONE);
+        llNoResultsFound.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.VISIBLE);
     }
 
     private void showResults() {
         rlLoadingScreen.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.GONE);
+        llNoResultsFound.setVisibility(View.GONE);
         lvListItems.setVisibility(View.VISIBLE);
+    }
+
+    private void showNoResults() {
+        rlLoadingScreen.setVisibility(View.GONE);
+        llInstructionScreen.setVisibility(View.GONE);
+        lvListItems.setVisibility(View.GONE);
+        llNoResultsFound.setVisibility(View.VISIBLE);
     }
 }

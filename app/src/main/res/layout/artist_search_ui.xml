@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <include android:id="@+id/llNoResultsFound"
+             layout="@layout/no_results_found_screen"/>
     <include android:id="@+id/rlLoadingScreen"
         layout="@layout/progress_screen"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
