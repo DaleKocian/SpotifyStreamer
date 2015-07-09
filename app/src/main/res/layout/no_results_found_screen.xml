@@ -7,6 +7,13 @@
               android:orientation="vertical"
               android:paddingTop="@dimen/top_distance">
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/alert"
+        android:id="@+id/ivDesktop"
+        android:contentDescription="@string/cd_no_results_image"/>
+
     <TextView
         android:id="@+id/tvNoResultsFound"
         android:layout_width="wrap_content"

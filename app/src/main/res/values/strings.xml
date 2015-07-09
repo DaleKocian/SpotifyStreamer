@@ -18,4 +18,5 @@
     <string name="track_name">Track Name</string>
     <string name="no_results_description">Please check you have the right spelling, or a try a different artist.</string>
     <string name="cd_spotify_icon">Spotify Icon</string>
+    <string name="cd_no_results_image">Alert Image</string>
 </resources>
