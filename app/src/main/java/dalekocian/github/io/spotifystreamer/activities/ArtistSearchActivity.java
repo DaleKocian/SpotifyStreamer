@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
 import dalekocian.github.io.spotifystreamer.model.SerializableArtist;
 import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
@@ -40,9 +42,9 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private LinearLayout llInstructionScreen;
     private LinearLayout llNoResultsFound;
     private ListView lvListItems;
+    private TextView tvNoResultsFound;
     private LinearLayout llProgressView;
     private RelativeLayout rlLoadingScreen;
-    public static final String NO_ARTISTS_FOUND = "No artists found!";
     private String searchString = "";
 
     @Override
@@ -59,6 +61,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
         rlLoadingScreen = (RelativeLayout) findViewById(R.id.rlLoadingScreen);
         llNoResultsFound = (LinearLayout) findViewById(R.id.llNoResultsFound);
+        tvNoResultsFound = (TextView) llNoResultsFound.findViewById(R.id.tvNoResultsFound);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(this, R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
         lvListItems.setOnItemClickListener(this);
@@ -75,6 +78,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
                 .setCallback(getArtistSearchCallback());
         lvListItems.setOnScrollListener(lazyLoadListener);
     }
+
 
     private ArtistSearchService.Callback getArtistSearchCallback() {
         return new ArtistSearchService.Callback() {
@@ -174,6 +178,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     public boolean onQueryTextChange(String searchString) {
         this.searchString = searchString;
         if (searchString.isEmpty()) {
+            artistSearchResultsAdapter.clear();
+            artistSearchResultsAdapter.notifyDataSetChanged();
             showInstructionScreen();
         } else {
             artistSearchService.searchArtist(searchString);
@@ -186,6 +192,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         Artist selectedArtist = artistSearchResultsAdapter.getItem(position);
         Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
         topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, selectedArtist.id);
+        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_NAME, selectedArtist.name);
         startActivity(topTenTrackIntent);
     }
 
@@ -224,6 +231,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private void showNoResults() {
+        tvNoResultsFound.setText(Constants.NO_RESULTS + "\"" + searchString + "\"");
         rlLoadingScreen.setVisibility(View.GONE);
         llInstructionScreen.setVisibility(View.GONE);
         lvListItems.setVisibility(View.GONE);

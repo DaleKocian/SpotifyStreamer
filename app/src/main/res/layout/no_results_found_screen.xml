@@ -11,7 +11,7 @@
         android:id="@+id/tvNoResultsFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Results found for "
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
