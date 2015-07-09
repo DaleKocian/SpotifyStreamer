@@ -59,7 +59,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
         return new TopTenTrackSearchService.ResponseListener() {
             @Override
             public void onResponse(Tracks tracks) {
-                if (tracks == null) {
+                if (tracks != null) {
                     List<Track> trackList = tracks.tracks;
                     topTenTracksAdapter.addAll(trackList);
                     topTenTracksAdapter.notifyDataSetChanged();
@@ -97,12 +97,10 @@ public class TopTenTrackActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         ArrayList<ParcelableTrack> trackArrayList = savedInstanceState.getParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY);
-        List<Track> trackList = new ArrayList<>();
-        for (ParcelableTrack parcelableTrack : trackArrayList) {
-            trackList.add(parcelableTrack.getTrack());
-        }
         topTenTracksAdapter.clear();
-        topTenTracksAdapter.addAll(trackList);
+        for (ParcelableTrack parcelableTrack : trackArrayList) {
+            topTenTracksAdapter.add(parcelableTrack.getTrack());
+        }
         topTenTracksAdapter.notifyDataSetChanged();
     }
 
