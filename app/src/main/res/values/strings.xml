@@ -10,7 +10,7 @@
     <string name="cd_search_icon">Search Icon</string>
     <string name="artist_search_instruction">Find your favourite artist</string>
     <string name="artist_search_detail_instruction">Search for artist, then click on row to see artist\'s top 10 tracks.</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="cd_artist_image">Artist Image</string>
     <string name="artist_name">Artist Name</string>
     <string name="cd_album_cover">Album Cover</string>
