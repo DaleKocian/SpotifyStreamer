@@ -8,4 +8,5 @@ public class Constants {
     public static final String NO_RESULTS = "No Results found for ";
     public static final String SINGLE_QUOTE = "\"";
     public static final String PLEASE_TRY_ANOTHER_ARTIST = "Please try another artist.";
+    public static final String LIST_POSITION_BUNDLE_KEY = "LIST_POSITION";
 }

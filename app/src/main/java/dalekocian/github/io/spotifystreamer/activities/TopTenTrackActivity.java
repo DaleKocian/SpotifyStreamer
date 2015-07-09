@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ import dalekocian.github.io.spotifystreamer.model.ParcelableTrack;
 import dalekocian.github.io.spotifystreamer.services.TopTenTrackSearchService;
 import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
-import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
@@ -47,6 +45,12 @@ public class TopTenTrackActivity extends AppCompatActivity {
         topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
         lvListItems.setAdapter(topTenTracksAdapter);
         topTenTrackSearchService = new TopTenTrackSearchService(this, getTopTenTrackSearchResponseListener());
+        topTenTrackSearchService.setCallback(new TopTenTrackSearchService.Callback() {
+            @Override
+            public void onPreExecute() {
+                showLoadingScreen();
+            }
+        });
     }
 
     private void setUpTextViewForNoResultsFound() {
@@ -62,6 +66,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
             public void onResponse(Tracks tracks) {
                 if (tracks != null) {
                     List<Track> trackList = tracks.tracks;
+                    topTenTracksAdapter.clear();
                     topTenTracksAdapter.addAll(trackList);
                     topTenTracksAdapter.notifyDataSetChanged();
                     showResults();
@@ -77,32 +82,32 @@ public class TopTenTrackActivity extends AppCompatActivity {
         super.onResume();
         if (topTenTracksAdapter.isEmpty()) {
             String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
-            if (Utils.hasInternetConnection(this)) {
-                showLoadingScreen();
-                topTenTrackSearchService.searchTopTenTracks(artistId);
-            } else {
-                Toast.makeText(this, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
-            }
+            topTenTrackSearchService.searchTopTenTracks(artistId);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         ArrayList<ParcelableTrack> trackArrayList = new ArrayList<>(topTenTracksAdapter.getTrackList().size());
         for (Track track : topTenTracksAdapter.getTrackList()) {
             trackArrayList.add(new ParcelableTrack(track));
         }
         outState.putParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY, trackArrayList);
+        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
         ArrayList<ParcelableTrack> trackArrayList = savedInstanceState.getParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY);
         topTenTracksAdapter.clear();
         for (ParcelableTrack parcelableTrack : trackArrayList) {
             topTenTracksAdapter.add(parcelableTrack.getTrack());
         }
         topTenTracksAdapter.notifyDataSetChanged();
+        lvListItems.setSelection(position);
     }
 
     @Override

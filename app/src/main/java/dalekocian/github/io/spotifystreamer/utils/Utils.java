@@ -62,7 +62,7 @@ public class Utils {
         return bundle;
     }
 
-    public static Map<String, String> getMapFromBundle(Bundle bundle) {
+    public static Map<String, String> createMapFromBundle(Bundle bundle) {
         Map<String, String> map = new HashMap<>(bundle.keySet().size());
         for (String key : bundle.keySet()) {
             map.put(key, bundle.getString(key));

@@ -117,6 +117,9 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         artistSearchResultsAdapter.addAll(artistPager.items);
         llProgressView.setVisibility(View.GONE);
         artistSearchResultsAdapter.notifyDataSetChanged();
+        if (artistPager.previous == null) {
+            lvListItems.setSelection(0);
+        }
     }
 
     @Override
@@ -144,6 +147,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         ArrayList<ParcelableArtist> parcelableArtistArrayList = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
         for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
             parcelableArtistArrayList.add(new ParcelableArtist(artist));
@@ -151,11 +155,14 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, parcelableArtistArrayList);
         outState.putCharSequence(SEARCH_STRING_BUNDLE_KEY, searchString);
         outState.putInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY, getResourceIdForVisibleLayout());
-        super.onSaveInstanceState(outState);
+        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());
+
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
         ArrayList<ParcelableArtist> parcelableArrayList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         int resourceId = savedInstanceState.getInt(RESOURCE_ID_VISIBLE_LAYOUT_BUNDLE_KEY);
@@ -167,7 +174,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         if (lvListItems.getId() == resourceId) {
             showResults();
         }
-        super.onRestoreInstanceState(savedInstanceState);
+        lvListItems.setSelection(position);
     }
 
     @Override

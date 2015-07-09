@@ -3,6 +3,7 @@ package dalekocian.github.io.spotifystreamer.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,16 +58,20 @@ public class ParcelableTrack extends Track implements Parcelable {
 
     protected ParcelableTrack(Parcel in) {
         this.album = in.readParcelable(ParcelableAlbumSimple.class.getClassLoader());
-        this.external_ids = Utils.getMapFromBundle(in.readBundle());
+        this.external_ids = Utils.createMapFromBundle(in.readBundle());
         this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
-        in.readList(this.artists, List.class.getClassLoader());
+        List<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>();
+        in.readList(parcelableArtistSimpleList, List.class.getClassLoader());
+        for (ParcelableArtistSimple parcelableArtistSimple : parcelableArtistSimpleList) {
+            this.artists.add(parcelableArtistSimple.getArtistSimple());
+        }
         this.available_markets = in.createStringArrayList();
         this.is_playable = in.readByte() != 0;
         this.linked_from = in.readParcelable(LinkedTrack.class.getClassLoader());
         this.disc_number = in.readInt();
         this.duration_ms = in.readLong();
         this.explicit = in.readByte() != 0;
-        this.external_urls = Utils.getMapFromBundle(in.readBundle());
+        this.external_urls = Utils.createMapFromBundle(in.readBundle());
         this.href = in.readString();
         this.id = in.readString();
         this.name = in.readString();
@@ -86,7 +91,11 @@ public class ParcelableTrack extends Track implements Parcelable {
         dest.writeParcelable(new ParcelableAlbumSimple(album), flags);
         dest.writeBundle(Utils.createBundleFromMap(external_ids));
         dest.writeValue(this.popularity);
-        dest.writeList(artists);
+        List<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>(artists.size());
+        for (ArtistSimple artistSimple : artists) {
+            parcelableArtistSimpleList.add(new ParcelableArtistSimple(artistSimple));
+        }
+        dest.writeList(parcelableArtistSimpleList);
         dest.writeStringList(available_markets);
         dest.writeByte(Utils.getByteFromBoolean(is_playable));
         dest.writeParcelable(new ParcelableLinkedTrack(this.linked_from), 0);

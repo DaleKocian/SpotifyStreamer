@@ -44,7 +44,7 @@ public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
     }
 
     protected ParcelableLinkedTrack(Parcel in) {
-        this.external_urls = Utils.getMapFromBundle(in.readBundle());
+        this.external_urls = Utils.createMapFromBundle(in.readBundle());
         this.href = in.readString();
         this.id = in.readString();
         this.type = in.readString();
