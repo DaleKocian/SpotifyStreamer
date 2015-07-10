@@ -21,18 +21,19 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
+    public static final String VISIBLE_FRAGMENT_TAG_BUNDLE_KEY = "VISIBLE_FRAGMENT_TAG";
     private ArtistSearchFragment artistSearchFragment;
     private String searchString = "";
-    private String fragmentTag = "";
+    private String visibleFragmentTag = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
-        fragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
+        visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
         artistSearchFragment = new ArtistSearchFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), fragmentTag)
+                .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), visibleFragmentTag)
                 .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getSimpleName())
                 .hide(artistSearchFragment).commit();
     }
@@ -79,15 +80,15 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     private void showScreen(Fragment fragment, String fragmentTag) {
         hideArtistSearchFragmentIfVisible();
-        if (!this.fragmentTag.equals(fragmentTag)) {
+        if (!this.visibleFragmentTag.equals(fragmentTag)) {
             removeFragmentIfNotArtistSearchFragment(getCurrentFragment());
             getSupportFragmentManager().beginTransaction().add(R.id.fContainer, fragment, fragmentTag).commit();
-            this.fragmentTag = fragmentTag;
+            this.visibleFragmentTag = fragmentTag;
         }
     }
 
     private void removeFragmentIfNotArtistSearchFragment(Fragment fragment) {
-        if (fragment != null && !ArtistSearchFragment.class.getSimpleName().equals(this.fragmentTag)) {
+        if (fragment != null && !ArtistSearchFragment.class.getSimpleName().equals(this.visibleFragmentTag)) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
@@ -99,7 +100,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private Fragment getCurrentFragment() {
-        return getSupportFragmentManager().findFragmentByTag(this.fragmentTag);
+        return getSupportFragmentManager().findFragmentByTag(this.visibleFragmentTag);
     }
 
     @Override
@@ -114,10 +115,33 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public void onResults() {
-        if (!ArtistSearchFragment.class.getSimpleName().equals(this.fragmentTag)) {
+        if (!ArtistSearchFragment.class.getSimpleName().equals(this.visibleFragmentTag)) {
             removeFragmentIfNotArtistSearchFragment(getCurrentFragment());
-            this.fragmentTag = ArtistSearchFragment.class.getSimpleName();
+            this.visibleFragmentTag = ArtistSearchFragment.class.getSimpleName();
             getSupportFragmentManager().beginTransaction().show(artistSearchFragment).commit();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
+        outState.putString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY, visibleFragmentTag);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
+        String oldVisibleFragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY);
+        if (oldVisibleFragmentTag.equals(ArtistSearchFragment.class.getSimpleName())) {
+            onResults();
+        } else if (oldVisibleFragmentTag.equals(LoadingFragment.class.getSimpleName())) {
+            onLoading();
+        } else if (oldVisibleFragmentTag.equals(NoResultsFragment.class.getSimpleName())) {
+            onNoResults();
+        } else if (oldVisibleFragmentTag.equals(ArtistSearchInstructionsFragment.class.getSimpleName())) {
+            showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName());
         }
     }
 }
