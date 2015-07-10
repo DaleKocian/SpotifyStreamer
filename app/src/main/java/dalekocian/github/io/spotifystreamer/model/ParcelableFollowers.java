@@ -42,4 +42,11 @@ public class ParcelableFollowers extends Followers implements Parcelable {
         dest.writeString(this.href);
         dest.writeInt(this.total);
     }
+
+    public Followers getFollowers() {
+        Followers followers = new Followers();
+        followers.href = this.href;
+        followers.total = this.total;
+        return followers;
+    }
 }

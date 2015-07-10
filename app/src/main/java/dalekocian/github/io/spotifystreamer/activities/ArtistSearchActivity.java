@@ -186,14 +186,14 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextChange(String searchString) {
-        this.searchString = searchString;
         if (searchString.isEmpty()) {
             artistSearchResultsAdapter.clear();
             artistSearchResultsAdapter.notifyDataSetChanged();
             showInstructionScreen();
-        } else {
+        } else if (!searchString.equals(this.searchString)) {
             artistSearchService.searchArtist(searchString);
         }
+        this.searchString = searchString;
         return false;
     }
 
