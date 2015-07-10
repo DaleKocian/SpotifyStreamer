@@ -18,7 +18,9 @@ import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.activities.TopTenTrackActivity;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
+import dalekocian.github.io.spotifystreamer.model.ParcelableArtist;
 import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
@@ -33,6 +35,7 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     private LinearLayout llProgressView;
     private Callback callback;
     private ArtistSearchService artistSearchService;
+    public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
 
     @Override
     public void onAttach(Activity activity) {
@@ -124,35 +127,30 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
         startActivity(topTenTrackIntent);
     }
 
-    //    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        ArrayList<ParcelableArtist> parcelableArtistArrayList = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
-//        for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
-//            parcelableArtistArrayList.add(new ParcelableArtist(artist));
-//        }
-//        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, parcelableArtistArrayList);
-//        outState.putCharSequence(SEARCH_STRING_BUNDLE_KEY, searchString);
-//        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());
-//    }
-//
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<ParcelableArtist> parcelableArtistArrayList = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
+        for (Artist artist : artistSearchResultsAdapter.getArtistList()) {
+            parcelableArtistArrayList.add(new ParcelableArtist(artist));
+        }
+        outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, parcelableArtistArrayList);
+        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       /* if (savedInstanceState != null) {
+        if (savedInstanceState != null) {
             int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
             ArrayList<ParcelableArtist> parcelableArrayList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
-            searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
             artistSearchResultsAdapter.clear();
             for (ParcelableArtist artist : parcelableArrayList) {
                 artistSearchResultsAdapter.add(artist.getArtist());
             }
             artistSearchResultsAdapter.notifyDataSetChanged();
-            if (lvListItems.getId() == resourceId) {
-                callback.onResults();
-            }
             lvListItems.setSelection(position);
-        }*/
+        }
     }
 
     public interface Callback {

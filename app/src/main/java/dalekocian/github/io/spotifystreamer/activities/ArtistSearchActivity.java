@@ -19,7 +19,7 @@ import dalekocian.github.io.spotifystreamer.fragments.NoResultsFragment;
 
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ArtistSearchFragment.Callback {
     private static final String TAG = ArtistSearchActivity.class.getName();
-    public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
+
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     public static final String VISIBLE_FRAGMENT_TAG_BUNDLE_KEY = "VISIBLE_FRAGMENT_TAG";
     private ArtistSearchFragment artistSearchFragment;
@@ -31,11 +31,13 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
         visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
-        artistSearchFragment = new ArtistSearchFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), visibleFragmentTag)
-                .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getSimpleName())
-                .hide(artistSearchFragment).commit();
+        if (savedInstanceState == null) {
+            artistSearchFragment = new ArtistSearchFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), visibleFragmentTag)
+                    .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getSimpleName())
+                    .hide(artistSearchFragment).commit();
+        }
     }
 
     @Override
@@ -69,10 +71,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public boolean onQueryTextChange(String searchString) {
-        this.searchString = searchString;
         if (searchString.isEmpty()) {
             showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName());
-        } else {
+        } else if (!searchString.equals(this.searchString)) {
+            this.searchString = searchString;
             artistSearchFragment.search(searchString);
         }
         return false;
@@ -131,7 +133,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+       /* super.onRestoreInstanceState(savedInstanceState);
         searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
         String oldVisibleFragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY);
         if (oldVisibleFragmentTag.equals(ArtistSearchFragment.class.getSimpleName())) {
@@ -142,6 +144,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             onNoResults();
         } else if (oldVisibleFragmentTag.equals(ArtistSearchInstructionsFragment.class.getSimpleName())) {
             showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName());
-        }
+        }*/
     }
 }
