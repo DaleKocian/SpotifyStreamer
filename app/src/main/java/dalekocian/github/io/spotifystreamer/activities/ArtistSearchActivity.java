@@ -169,6 +169,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         artistSearchResultsAdapter.notifyDataSetChanged();
         if (lvListItems.getId() == resourceId) {
             showResults();
+        } else if (llNoResultsFound.getId() == resourceId) {
+            showNoResults();
         }
         lvListItems.setSelection(position);
     }
@@ -209,6 +211,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private int getResourceIdForVisibleLayout() {
         if (Utils.isVisible(lvListItems)) {
             return lvListItems.getId();
+        } else if (Utils.isVisible(llNoResultsFound)) {
+            return llNoResultsFound.getId();
         }
         return llInstructionScreen.getId();
     }
