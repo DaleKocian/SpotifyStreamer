@@ -24,13 +24,11 @@ public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
     }
 
     public ParcelableLinkedTrack(LinkedTrack linkedTrack) {
-        if (linkedTrack != null) {
-            this.external_urls = linkedTrack.external_urls;
-            this.href = linkedTrack.href;
-            this.id = linkedTrack.id;
-            this.type = linkedTrack.type;
-            this.uri = linkedTrack.uri;
-        }
+        this.external_urls = linkedTrack.external_urls;
+        this.href = linkedTrack.href;
+        this.id = linkedTrack.id;
+        this.type = linkedTrack.type;
+        this.uri = linkedTrack.uri;
     }
 
     protected ParcelableLinkedTrack(Parcel in) {
@@ -53,5 +51,15 @@ public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.type);
         dest.writeString(this.uri);
+    }
+
+    public LinkedTrack getLinkedTrack() {
+        LinkedTrack linkedTrack = new LinkedTrack();
+        linkedTrack.external_urls = this.external_urls;
+        linkedTrack.href = this.href;
+        linkedTrack.id = this.id;
+        linkedTrack.type = this.type;
+        linkedTrack.uri = this.uri;
+        return linkedTrack;
     }
 }

@@ -23,11 +23,9 @@ public class ParcelableImage extends Image implements Parcelable {
     }
 
     public ParcelableImage(Image image) {
-        if (image != null) {
-            this.width = image.width;
-            this.height = image.height;
-            this.url = image.url;
-        }
+        this.width = image.width;
+        this.height = image.height;
+        this.url = image.url;
     }
 
     protected ParcelableImage(Parcel in) {

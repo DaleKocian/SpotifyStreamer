@@ -5,9 +5,9 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import dalekocian.github.io.spotifystreamer.utils.ParcelableUtils;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.Image;
 
 /**
  * Created by dkocian on 6/26/15.
@@ -27,16 +27,14 @@ public class ParcelableArtist extends Artist implements Parcelable {
     }
 
     public ParcelableArtist(Artist artist) {
-        if (artist != null) {
-            this.followers = artist.followers;
-            this.genres = artist.genres;
-            this.images = artist.images;
-            this.popularity = artist.popularity;
-            this.external_urls = artist.external_urls;
-            this.href = artist.href;
-            this.type = artist.type;
-            this.uri = artist.uri;
-        }
+        this.followers = artist.followers;
+        this.genres = artist.genres;
+        this.images = artist.images;
+        this.popularity = artist.popularity;
+        this.external_urls = artist.external_urls;
+        this.href = artist.href;
+        this.type = artist.type;
+        this.uri = artist.uri;
     }
 
     protected ParcelableArtist(Parcel in) {
@@ -45,10 +43,7 @@ public class ParcelableArtist extends Artist implements Parcelable {
         this.images = new ArrayList<>();
         ArrayList<ParcelableImage> arrayList = new ArrayList<>();
         in.readList(arrayList, ParcelableImage.class.getClassLoader());
-        this.images = new ArrayList<>(arrayList.size());
-        for (ParcelableImage parcelableImage : arrayList) {
-            this.images.add(parcelableImage.getImage());
-        }
+        this.images = ParcelableUtils.getImagesFromParcelableImages(arrayList);
         this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
@@ -61,11 +56,7 @@ public class ParcelableArtist extends Artist implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(new ParcelableFollowers(followers), 0);
         dest.writeStringList(this.genres);
-        ArrayList<ParcelableImage> arrayList = new ArrayList<>(this.images.size());
-        for (Image image : images) {
-            arrayList.add(new ParcelableImage(image));
-        }
-        dest.writeList(arrayList);
+        dest.writeList(ParcelableUtils.getListOfParcelableImages(this.images));
         dest.writeValue(this.popularity);
         dest.writeBundle(Utils.createBundleFromMap(external_urls));
         dest.writeString(this.href);

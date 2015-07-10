@@ -23,10 +23,8 @@ public class ParcelableFollowers extends Followers implements Parcelable {
     }
 
     public ParcelableFollowers(Followers followers) {
-        if (followers != null) {
-            this.href = followers.href;
-            this.total = followers.total;
-        }
+        this.href = followers.href;
+        this.total = followers.total;
     }
 
     protected ParcelableFollowers(Parcel in) {

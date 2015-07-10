@@ -24,14 +24,12 @@ public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
     }
 
     public ParcelableArtistSimple(ArtistSimple artistSimple) {
-        if (artistSimple != null) {
-            this.external_urls = artistSimple.external_urls;
-            this.href = artistSimple.href;
-            this.id = artistSimple.id;
-            this.name = artistSimple.name;
-            this.type = artistSimple.type;
-            this.uri = artistSimple.uri;
-        }
+        this.external_urls = artistSimple.external_urls;
+        this.href = artistSimple.href;
+        this.id = artistSimple.id;
+        this.name = artistSimple.name;
+        this.type = artistSimple.type;
+        this.uri = artistSimple.uri;
     }
 
     protected ParcelableArtistSimple(Parcel in) {

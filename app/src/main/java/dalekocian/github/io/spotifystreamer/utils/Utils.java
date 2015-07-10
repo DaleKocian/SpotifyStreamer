@@ -54,7 +54,31 @@ public class Utils {
         return (byte) ((bool != null && bool) ? 1 : 0);
     }
 
+    public static int getIntFromBoolean(Boolean bool) {
+        if (bool == null) {
+            return -1;
+        } else if (bool) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static Boolean getBooleanFromInt(int bool) {
+        switch (bool) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            default:
+                return null;
+        }
+    }
+
     public static Bundle createBundleFromMap(Map<String, String> map) {
+        if (map == null) {
+            return null;
+        }
         Bundle bundle = new Bundle();
         for (Map.Entry<String, String> entry : map.entrySet()) {
             bundle.putString(entry.getKey(), entry.getValue());
@@ -63,6 +87,9 @@ public class Utils {
     }
 
     public static Map<String, String> createMapFromBundle(Bundle bundle) {
+        if (bundle == null) {
+            return null;
+        }
         Map<String, String> map = new HashMap<>(bundle.keySet().size());
         for (String key : bundle.keySet()) {
             map.put(key, bundle.getString(key));
