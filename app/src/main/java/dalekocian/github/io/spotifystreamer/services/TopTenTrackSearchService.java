@@ -36,14 +36,14 @@ public class TopTenTrackSearchService {
         this.callback = EMPTY_CALLBACK;
     }
 
-    public void searchTopTenTracks(String artistId) {
-        checkNetworkAndExecute(artistId);
+    public void searchTopTenTracks(String artistId, String countryCode) {
+        checkNetworkAndExecute(artistId, countryCode);
     }
 
-    private void checkNetworkAndExecute(String artistName) {
+    private void checkNetworkAndExecute(String artistId, String countryCode) {
         if (Utils.hasInternetConnection(context)) {
             callback.onPreExecute();
-            new SearchArtistsTopTracks().execute(artistName);
+            new SearchArtistsTopTracks().execute(artistId, countryCode);
         } else {
             Toast.makeText(context, Constants.NETWORK_CONNECTION_ERROR, Toast.LENGTH_SHORT).show();
         }
@@ -51,12 +51,13 @@ public class TopTenTrackSearchService {
 
     class SearchArtistsTopTracks extends AsyncTask<String, Integer, Tracks> {
         protected Tracks doInBackground(String... query) {
-            String q = query[0];
+            String artistId = query[0];
+            String countryCode = query[1];
             SpotifyService spotifyService = new SpotifyApi().getService();
             Map<String, Object> params = new HashMap<>();
-            params.put(Prefkeys.COUNTRY_PARAM_KEY, Utils.getCountryCodeFromSettings(context));
+            params.put(Prefkeys.COUNTRY_PARAM_KEY, countryCode);
             try {
-                return spotifyService.getArtistTopTrack(q, params);
+                return spotifyService.getArtistTopTrack(artistId, params);
             } catch (RetrofitError e) {
                 return null;
             }

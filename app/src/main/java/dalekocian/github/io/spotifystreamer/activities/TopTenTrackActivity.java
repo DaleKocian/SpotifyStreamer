@@ -22,6 +22,7 @@ import dalekocian.github.io.spotifystreamer.model.ParcelableTrack;
 import dalekocian.github.io.spotifystreamer.services.TopTenTrackSearchService;
 import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
+import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
@@ -34,6 +35,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
     private LinearLayout llNoResultsFound;
     private ViewStub vsNoResultsFound;
     private TopTenTrackSearchService topTenTrackSearchService;
+    private String countryCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +82,11 @@ public class TopTenTrackActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (topTenTracksAdapter.isEmpty()) {
+        String currentCountryCode = Utils.getCountryCodeFromSettings(this);
+        if (topTenTracksAdapter.isEmpty() || countryCode == null || !countryCode.equals(currentCountryCode)) {
+            countryCode = currentCountryCode;
             String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
-            topTenTrackSearchService.searchTopTenTracks(artistId);
+            topTenTrackSearchService.searchTopTenTracks(artistId, countryCode);
         }
     }
 
