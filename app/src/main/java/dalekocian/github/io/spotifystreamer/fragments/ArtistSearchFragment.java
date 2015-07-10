@@ -18,8 +18,10 @@ import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.activities.TopTenTrackActivity;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
+import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Pager;
 
 /**
@@ -30,7 +32,8 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     private ListView lvListItems;
     private LinearLayout llProgressView;
     private Callback callback;
-    LazyLoadListener lazyLoadListener;
+    private ArtistSearchService artistSearchService;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -51,17 +54,50 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(getActivity(), R.layout.lv_row_search_results, new ArrayList<Artist>(0));
         lvListItems.setAdapter(artistSearchResultsAdapter);
         lvListItems.setOnItemClickListener(this);
-        lazyLoadListener = new LazyLoadListener() {
+        final LazyLoadListener lazyLoadListener = new LazyLoadListener() {
             @Override
             public void addNewElements() {
-               callback.onLoadMore();
+                boolean executedSearch = artistSearchService.searchArtistNext();
+                if (executedSearch) {
+                    llProgressView.setVisibility(View.VISIBLE);
+                }
             }
         };
         lvListItems.setOnScrollListener(lazyLoadListener);
+        artistSearchService = new ArtistSearchService(getActivity(), getArtistSearchResponseListener(lazyLoadListener))
+                .setCallback(getArtistSearchCallback());
         return view;
     }
 
+    private ArtistSearchService.Callback getArtistSearchCallback() {
+        return new ArtistSearchService.Callback() {
+            @Override
+            public void onPreExecute() {
+                callback.onLoading();
+            }
 
+            @Override
+            public void onPostExecute() {
+            }
+        };
+    }
+
+    private ArtistSearchService.ResponseListener getArtistSearchResponseListener(final LazyLoadListener lazyLoadListener) {
+        return new ArtistSearchService.ResponseListener() {
+            @Override
+            public void onResponse(ArtistsPager result) {
+                Pager<Artist> artistPager = result.artists;
+                if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
+                    callback.onNoResults();
+                } else {
+                    callback.onResults();
+                    artistSearchService.setTotal(artistPager.total);
+                    updateArrayAdapter(artistPager);
+                }
+                lazyLoadListener.doneLoading();
+            }
+        };
+    }
 
     public void updateArrayAdapter(Pager<Artist> artistPager) {
         if (artistPager.previous == null) {
@@ -75,12 +111,8 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
         }
     }
 
-   public void doneLazyLoading() {
-       lazyLoadListener.doneLoading();
-   }
-
-    public void showLoading() {
-        llProgressView.setVisibility(View.VISIBLE);
+    public void search(String artistName) {
+        artistSearchService.searchArtist(artistName);
     }
 
     @Override
@@ -92,7 +124,7 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
         startActivity(topTenTrackIntent);
     }
 
-//    @Override
+    //    @Override
 //    public void onSaveInstanceState(Bundle outState) {
 //        super.onSaveInstanceState(outState);
 //        ArrayList<ParcelableArtist> parcelableArtistArrayList = new ArrayList<>(artistSearchResultsAdapter.getArtistList().size());
@@ -123,9 +155,11 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
         }*/
     }
 
-
-
     public interface Callback {
-        void onLoadMore();
+        void onNoResults();
+
+        void onLoading();
+
+        void onResults();
     }
 }

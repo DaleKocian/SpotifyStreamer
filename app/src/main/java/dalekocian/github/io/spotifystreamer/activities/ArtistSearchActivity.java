@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -13,10 +14,8 @@ import android.view.inputmethod.EditorInfo;
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.fragments.ArtistSearchFragment;
 import dalekocian.github.io.spotifystreamer.fragments.ArtistSearchInstructionsFragment;
-import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
-import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.ArtistsPager;
-import kaaes.spotify.webapi.android.models.Pager;
+import dalekocian.github.io.spotifystreamer.fragments.LoadingFragment;
+import dalekocian.github.io.spotifystreamer.fragments.NoResultsFragment;
 
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ArtistSearchFragment.Callback {
     private static final String TAG = ArtistSearchActivity.class.getName();
@@ -24,7 +23,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     private String searchString = "";
     private ArtistSearchFragment artistSearchFragment;
-    private ArtistSearchService artistSearchService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,46 +35,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
                 .add(R.id.fContainer, artistSearchFragment).commit();
         getSupportFragmentManager().beginTransaction()
                 .hide(artistSearchFragment).commit();
-
-        artistSearchService = new ArtistSearchService(this, getArtistSearchResponseListener())
-                .setCallback(getArtistSearchCallback());
-    }
-
-    private ArtistSearchService.Callback getArtistSearchCallback() {
-        return new ArtistSearchService.Callback() {
-            @Override
-            public void onPreExecute() {
-                showLoadingScreen();
-            }
-
-            @Override
-            public void onPostExecute() {
-            }
-        };
-    }
-
-    private ArtistSearchService.ResponseListener getArtistSearchResponseListener() {
-        return new ArtistSearchService.ResponseListener() {
-            @Override
-            public void onResponse(ArtistsPager result) {
-                Pager<Artist> artistPager = result.artists;
-                if (artistPager == null || artistPager.items == null || artistPager.items.isEmpty()) {
-                    showNoResultsScreen();
-                } else {
-                    showResultsScreen();
-                    artistSearchService.setTotal(artistPager.total);
-                    artistSearchFragment.updateArrayAdapter(artistPager);
-                }
-                artistSearchFragment.doneLazyLoading();
-            }
-        };
-    }
-
-    private void showResultsScreen() {
-        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag(ArtistSearchInstructionsFragment
-                .class.getSimpleName())).commit();
-        getSupportFragmentManager().beginTransaction()
-                .show(artistSearchFragment).commit();
     }
 
     @Override
@@ -114,40 +72,75 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         if (searchString.isEmpty()) {
             showInstructionScreen();
         } else {
-            artistSearchService.searchArtist(searchString);
+            artistSearchFragment.search(searchString);
         }
         return false;
     }
 
     private void showInstructionScreen() {
-        getSupportFragmentManager().beginTransaction()
-                .hide(artistSearchFragment).commit();
+        hideArtistSearchFragmentIfVisible();
+        removeOtherFragments();
         if (getSupportFragmentManager().findFragmentByTag(ArtistSearchInstructionsFragment
-                        .class.getSimpleName()) == null) {
+                .class.getSimpleName()) == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fContainer, new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName()).commit();
         }
     }
 
     private void showLoadingScreen() {
-
-    }
-
-    private void showNoResultsScreen() {
-
-    }
-
-    @Override
-    public void onLoadMore() {
-        boolean executedSearch = artistSearchService.searchArtistNext();
-        if (executedSearch) {
-            artistSearchFragment.showLoading();
+        hideArtistSearchFragmentIfVisible();
+        removeOtherFragments();
+        if (getSupportFragmentManager().findFragmentByTag(LoadingFragment.class.getSimpleName()) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fContainer, new LoadingFragment(), LoadingFragment.class.getSimpleName()).commit();
         }
     }
 
+    private void showNoResultsScreen() {
+        hideArtistSearchFragmentIfVisible();
+        removeOtherFragments();
+        if (getSupportFragmentManager().findFragmentByTag(NoResultsFragment.class.getSimpleName()) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fContainer, new NoResultsFragment(), NoResultsFragment.class.getSimpleName()).commit();
+        }
+    }
+
+    private void removeOtherFragments() {
+        removeFragment(getSupportFragmentManager().findFragmentByTag(LoadingFragment.class.getSimpleName()));
+        removeFragment(getSupportFragmentManager().findFragmentByTag(NoResultsFragment.class.getSimpleName()));
+        removeFragment(getSupportFragmentManager().findFragmentByTag(ArtistSearchInstructionsFragment.class.getSimpleName()));
+    }
+
+    private void removeFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+    }
+
+    private void hideArtistSearchFragmentIfVisible() {
+        if (artistSearchFragment.isVisible()) {
+            getSupportFragmentManager().beginTransaction().hide(artistSearchFragment).commit();
+        }
+    }
+
+    private void showResultsScreen() {
+        removeOtherFragments();
+        getSupportFragmentManager().beginTransaction()
+                .show(artistSearchFragment).commit();
+    }
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        artistSearchService.cancel();
+    public void onNoResults() {
+        showNoResultsScreen();
+    }
+
+    @Override
+    public void onLoading() {
+        showLoadingScreen();
+    }
+
+    @Override
+    public void onResults() {
+        showResultsScreen();
     }
 }

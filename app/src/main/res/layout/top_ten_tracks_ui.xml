@@ -15,7 +15,7 @@
 
     <include
         android:id="@+id/rlLoadingScreen"
-        layout="@layout/progress_screen"/>
+        layout="@layout/loading_ui"/>
 
     <ListView
         android:id="@+id/lvListItems"
