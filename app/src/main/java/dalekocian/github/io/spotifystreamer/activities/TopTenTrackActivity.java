@@ -53,6 +53,10 @@ public class TopTenTrackActivity extends AppCompatActivity {
                 showLoadingScreen();
             }
         });
+        countryCode = Utils.getCountryCodeFromSettings(this);
+        if (savedInstanceState == null) {
+            callTopTenTrackSearch();
+        }
     }
 
     private void setUpTextViewForNoResultsFound() {
@@ -83,10 +87,9 @@ public class TopTenTrackActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         String currentCountryCode = Utils.getCountryCodeFromSettings(this);
-        if (topTenTracksAdapter.isEmpty() || countryCode == null || !countryCode.equals(currentCountryCode)) {
+        if (!countryCode.equals(currentCountryCode)) {
             countryCode = currentCountryCode;
-            String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
-            topTenTrackSearchService.searchTopTenTracks(artistId, countryCode);
+            callTopTenTrackSearch();
         }
     }
 
@@ -154,5 +157,10 @@ public class TopTenTrackActivity extends AppCompatActivity {
             llNoResultsFound.setVisibility(View.GONE);
         }
         lvListItems.setVisibility(View.VISIBLE);
+    }
+
+    private void callTopTenTrackSearch() {
+        String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
+        topTenTrackSearchService.searchTopTenTracks(artistId, countryCode);
     }
 }
