@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,11 +50,6 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
-        Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
-        }
         lvListItems = (ListView) findViewById(R.id.lvListItems);
         llInstructionScreen = (LinearLayout) findViewById(R.id.llInstructionScreen);
         llProgressView = (LinearLayout) findViewById(R.id.llProgressView);
