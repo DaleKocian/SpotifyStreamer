@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -22,6 +23,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     public static final String VISIBLE_FRAGMENT_TAG_BUNDLE_KEY = "VISIBLE_FRAGMENT_TAG";
+    public static final String SAVED_FRAGMENT = "SAVED_FRAGMENT";
     private ArtistSearchFragment artistSearchFragment;
     private String searchString = "";
     private String visibleFragmentTag = "";
@@ -30,13 +32,17 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
-        visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
         if (savedInstanceState == null) {
+            visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
             artistSearchFragment = new ArtistSearchFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), visibleFragmentTag)
                     .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getSimpleName())
                     .hide(artistSearchFragment).commit();
+        } else {
+            searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
+            visibleFragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY);
+            artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().getFragment(savedInstanceState, SAVED_FRAGMENT);
         }
     }
 
@@ -129,21 +135,11 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
         outState.putString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY, visibleFragmentTag);
+        getSupportFragmentManager().putFragment(outState, SAVED_FRAGMENT, artistSearchFragment);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-       /* super.onRestoreInstanceState(savedInstanceState);
-        searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
-        String oldVisibleFragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG_BUNDLE_KEY);
-        if (oldVisibleFragmentTag.equals(ArtistSearchFragment.class.getSimpleName())) {
-            onResults();
-        } else if (oldVisibleFragmentTag.equals(LoadingFragment.class.getSimpleName())) {
-            onLoading();
-        } else if (oldVisibleFragmentTag.equals(NoResultsFragment.class.getSimpleName())) {
-            onNoResults();
-        } else if (oldVisibleFragmentTag.equals(ArtistSearchInstructionsFragment.class.getSimpleName())) {
-            showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName());
-        }*/
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+
     }
 }
