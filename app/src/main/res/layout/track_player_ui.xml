@@ -47,7 +47,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ivPlay"
+        android:id="@+id/ivPlayPause"
         android:background="@android:color/black"
         android:src="@android:drawable/ic_media_play"
         android:layout_alignTop="@+id/ivPrevious"
@@ -59,8 +59,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:src="@android:drawable/ic_media_next"
-        android:id="@+id/btnNext"
-        android:layout_alignTop="@+id/ivPlay"
+        android:id="@+id/ivNext"
+        android:layout_alignTop="@+id/ivPlayPause"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:contentDescription="Play next track" />
