@@ -6,4 +6,6 @@ package dalekocian.github.io.spotifystreamer.utils;
 public final class ExtraKeys {
     public static final String ARTIST_ID = "ARTIST_ID";
     public static final String ARTIST_NAME = "ARTIST_NAME";
+    public static final String TRACK_LIST = "TRACK_LIST";
+    public static final String POSITION = "POSITION";
 }

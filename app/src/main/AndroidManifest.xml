@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+        android:name=".SpotifyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,6 +29,9 @@
         <activity
             android:name=".activities.TopTenTrackActivity"
             android:label="@string/title_activity_top_ten_track"/>
+        <activity
+            android:name=".activities.TrackPlayerActivity"
+            android:label="Track Player Activity"/>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_preference"/>

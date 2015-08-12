@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -26,7 +27,7 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
-public class TopTenTrackActivity extends AppCompatActivity {
+public class TopTenTrackActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String TAG = TopTenTrackActivity.class.getName();
     public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     private TopTenTracksAdapter topTenTracksAdapter;
@@ -46,6 +47,7 @@ public class TopTenTrackActivity extends AppCompatActivity {
         vsNoResultsFound = (ViewStub) findViewById(R.id.vsNoResultsFound);
         topTenTracksAdapter = new TopTenTracksAdapter(this, R.layout.lv_row_top_ten_tracks, new ArrayList<Track>(0));
         lvListItems.setAdapter(topTenTracksAdapter);
+        lvListItems.setOnItemClickListener(this);
         topTenTrackSearchService = new TopTenTrackSearchService(this, getTopTenTrackSearchResponseListener());
         topTenTrackSearchService.setCallback(new TopTenTrackSearchService.Callback() {
             @Override
@@ -162,5 +164,17 @@ public class TopTenTrackActivity extends AppCompatActivity {
     private void callTopTenTrackSearch() {
         String artistId = getIntent().getStringExtra(ExtraKeys.ARTIST_ID);
         topTenTrackSearchService.searchTopTenTracks(artistId, countryCode);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, TrackPlayerActivity.class);
+        ArrayList<ParcelableTrack> parcelableTrackArrayList = new ArrayList<>(topTenTracksAdapter.getTrackList().size());
+        for (Track track : topTenTracksAdapter.getTrackList()) {
+            parcelableTrackArrayList.add(new ParcelableTrack(track));
+        }
+        intent.putParcelableArrayListExtra(ExtraKeys.TRACK_LIST, parcelableTrackArrayList);
+        intent.putExtra(ExtraKeys.POSITION, new Integer(position));
+        startActivity(intent);
     }
 }
