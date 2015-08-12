@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId "dalekocian.github.io.spotifystreamer"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 2
         versionName "2.0"
     }
