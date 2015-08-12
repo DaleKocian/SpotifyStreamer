@@ -40,17 +40,17 @@ public class ParcelableLinkedTrack extends LinkedTrack implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(Utils.createBundleFromMap(external_urls));
         dest.writeString(this.href);
         dest.writeString(this.id);
         dest.writeString(this.type);
         dest.writeString(this.uri);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public LinkedTrack getLinkedTrack() {

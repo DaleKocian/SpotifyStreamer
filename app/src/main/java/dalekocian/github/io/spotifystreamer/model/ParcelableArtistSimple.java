@@ -42,11 +42,6 @@ public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(Utils.createBundleFromMap(this.external_urls));
         dest.writeString(this.href);
@@ -54,6 +49,11 @@ public class ParcelableArtistSimple extends ArtistSimple implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.type);
         dest.writeString(this.uri);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public ArtistSimple getArtistSimple() {
