@@ -41,11 +41,11 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             ((ArtistSearchFragment) getSupportFragmentManager().findFragmentById(R.id.item_list)).setActivateOnItemClick(true);
         }
         if (savedInstanceState == null) {
-            visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
+            visibleFragmentTag = ArtistSearchInstructionsFragment.class.getName();
             artistSearchFragment = new ArtistSearchFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), visibleFragmentTag)
-                    .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getSimpleName())
+                    .add(R.id.fContainer, artistSearchFragment, ArtistSearchFragment.class.getName())
                     .hide(artistSearchFragment).commit();
         } else {
             searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
@@ -86,7 +86,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     @Override
     public boolean onQueryTextChange(String searchString) {
         if (searchString.isEmpty()) {
-            showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getSimpleName());
+            showScreen(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getName());
         } else if (!searchString.equals(this.searchString)) {
             this.searchString = searchString;
             artistSearchFragment.search(searchString);
@@ -104,7 +104,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private void removeFragmentIfNotArtistSearchFragment(Fragment fragment) {
-        if (fragment != null && !ArtistSearchFragment.class.getSimpleName().equals(this.visibleFragmentTag)) {
+        if (fragment != null && !ArtistSearchFragment.class.getName().equals(this.visibleFragmentTag)) {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
     }
@@ -121,19 +121,19 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     public void onNoResults() {
-        showScreen(new NoResultsFragment(), NoResultsFragment.class.getSimpleName());
+        showScreen(new NoResultsFragment(), NoResultsFragment.class.getName());
     }
 
     @Override
     public void onLoading() {
-        showScreen(new LoadingFragment(), LoadingFragment.class.getSimpleName());
+        showScreen(new LoadingFragment(), LoadingFragment.class.getName());
     }
 
     @Override
     public void onResults() {
-        if (!ArtistSearchFragment.class.getSimpleName().equals(this.visibleFragmentTag)) {
+        if (!ArtistSearchFragment.class.getName().equals(this.visibleFragmentTag)) {
             removeFragmentIfNotArtistSearchFragment(getCurrentFragment());
-            this.visibleFragmentTag = ArtistSearchFragment.class.getSimpleName();
+            this.visibleFragmentTag = ArtistSearchFragment.class.getName();
             getSupportFragmentManager().beginTransaction().show(artistSearchFragment).commit();
         }
     }
