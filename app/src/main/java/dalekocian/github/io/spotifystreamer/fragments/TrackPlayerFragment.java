@@ -80,6 +80,10 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         public void onReceive(Context context, Intent intent) {
             if (Constants.MEDIA_PLAYER_START_ACTION.equals(intent.getAction())) {
                 updateProgressBar();
+            } else if (Constants.MEDIA_PLAYER_FINISH_ACTION.equals(intent.getAction())) {
+                mHandler.removeCallbacks(mUpdateTimeTask);
+                resetSeekBar();
+                swapPlayPauseButton(PLAY);
             }
         }
     };
@@ -92,8 +96,9 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         trackList = getArguments().getParcelableArrayList(ExtraKeys.TRACK_LIST);
         currentPosition = getArguments().getInt(ExtraKeys.POSITION, 0);
         setupView(trackList.get(currentPosition));
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver,
-                new IntentFilter(Constants.MEDIA_PLAYER_START_ACTION));
+        IntentFilter intentFilter = new IntentFilter(Constants.MEDIA_PLAYER_START_ACTION);
+        intentFilter.addAction(Constants.MEDIA_PLAYER_FINISH_ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, intentFilter);
         return view;
     }
 
@@ -150,11 +155,13 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
 
     private void pauseSong() {
         mMediaPlayerService.pauseTrack();
+        mHandler.removeCallbacks(mUpdateTimeTask);
         swapPlayPauseButton(PLAY);
     }
 
     private void playSong() {
         mMediaPlayerService.playTrack();
+        mHandler.removeCallbacks(mUpdateTimeTask);
         swapPlayPauseButton(PAUSE);
         if (mMediaPlayerService.getCurrentPosition() == 0) {
             resetSeekBar();
@@ -182,6 +189,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     }
 
     private void resetSeekBar() {
+        mTvCurrentTime.setText((Utils.millisecondsToTime(0)));
         mSbDuration.setProgress(0);
         mSbDuration.setMax(MAX_PROGRESS);
     }

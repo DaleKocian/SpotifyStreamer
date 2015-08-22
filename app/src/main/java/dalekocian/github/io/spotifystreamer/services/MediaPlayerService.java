@@ -26,7 +26,8 @@ import kaaes.spotify.webapi.android.models.Image;
 /**
  * Created by dkocian on 8/12/2015.
  */
-public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayerInterface {
+public class MediaPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
+        MediaPlayerInterface, MediaPlayer.OnCompletionListener {
     private static final String TAG = MediaPlayerService.class.getName();
     private static final int NOTIFICATION_ID = 100;
     private final IBinder mBinder = new LocalBinder();
@@ -73,6 +74,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         mMediaPlayer.setDataSource(currentTrackInfo.url);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
     }
 
@@ -185,6 +187,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             wifiLock.release();
         }
         stopForeground(true);
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        Intent intent = new Intent();
+        intent.setAction(Constants.MEDIA_PLAYER_FINISH_ACTION);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     public class LocalBinder extends Binder {
