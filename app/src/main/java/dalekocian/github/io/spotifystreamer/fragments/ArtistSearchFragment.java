@@ -1,7 +1,6 @@
 package dalekocian.github.io.spotifystreamer.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,13 +14,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import dalekocian.github.io.spotifystreamer.R;
-import dalekocian.github.io.spotifystreamer.activities.TopTenTrackActivity;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
 import dalekocian.github.io.spotifystreamer.model.ParcelableArtist;
 import dalekocian.github.io.spotifystreamer.services.ArtistSearchService;
 import dalekocian.github.io.spotifystreamer.utils.Constants;
-import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import kaaes.spotify.webapi.android.models.Pager;
@@ -38,12 +35,12 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            callback = (Callback) activity;
+            callback = (Callback) getActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(getActivity().toString()
                     + " must implement OnHeadlineSelectedListener");
         }
     }
@@ -120,11 +117,7 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Artist selectedArtist = artistSearchResultsAdapter.getItem(position);
-        Intent topTenTrackIntent = new Intent(getActivity(), TopTenTrackActivity.class);
-        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, selectedArtist.id);
-        topTenTrackIntent.putExtra(ExtraKeys.ARTIST_NAME, selectedArtist.name);
-        startActivity(topTenTrackIntent);
+        callback.onItemSelected(artistSearchResultsAdapter.getItem(position));
     }
 
     @Override
@@ -152,12 +145,18 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
             lvListItems.setSelection(position);
         }
     }
-
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically
+        // give items the 'activated' state when touched.
+        lvListItems.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+    }
     public interface Callback {
         void onNoResults();
 
         void onLoading();
 
         void onResults();
+
+        void onItemSelected(Artist artist);
     }
 }

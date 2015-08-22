@@ -17,6 +17,9 @@ import dalekocian.github.io.spotifystreamer.fragments.ArtistSearchFragment;
 import dalekocian.github.io.spotifystreamer.fragments.ArtistSearchInstructionsFragment;
 import dalekocian.github.io.spotifystreamer.fragments.LoadingFragment;
 import dalekocian.github.io.spotifystreamer.fragments.NoResultsFragment;
+import dalekocian.github.io.spotifystreamer.fragments.TopTenTracksFragment;
+import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
+import kaaes.spotify.webapi.android.models.Artist;
 
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ArtistSearchFragment.Callback {
     private static final String TAG = ArtistSearchActivity.class.getName();
@@ -27,11 +30,16 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private ArtistSearchFragment artistSearchFragment;
     private String searchString = "";
     private String visibleFragmentTag = "";
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
+        if (findViewById(R.id.item_list) != null) {
+            mTwoPane = true;
+            ((ArtistSearchFragment) getSupportFragmentManager().findFragmentById(R.id.item_list)).setActivateOnItemClick(true);
+        }
         if (savedInstanceState == null) {
             visibleFragmentTag = ArtistSearchInstructionsFragment.class.getSimpleName();
             artistSearchFragment = new ArtistSearchFragment();
@@ -131,6 +139,23 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     @Override
+    public void onItemSelected(Artist artist) {
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putString(ExtraKeys.ARTIST_ID, artist.id);
+            arguments.putString(ExtraKeys.ARTIST_NAME, artist.name);
+            TopTenTracksFragment fragment = new TopTenTracksFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, fragment).commit();
+        } else {
+            Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
+            topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, artist.id);
+            topTenTrackIntent.putExtra(ExtraKeys.ARTIST_NAME, artist.name);
+            startActivity(topTenTrackIntent);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
@@ -140,6 +165,5 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-
     }
 }

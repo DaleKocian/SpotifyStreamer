@@ -1,25 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              tools:context=".activities.TopTenTrackActivity">
-
-    <ViewStub
-        android:id="@+id/vsNoResultsFound"
-        android:layout="@layout/no_results_found_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inflatedId="@+id/llNoResultsFound"/>
-
-    <include
-        android:id="@+id/rlLoadingScreen"
-        layout="@layout/loading_ui"/>
-
-    <ListView
-        android:id="@+id/lvListItems"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scrollbarStyle="outsideOverlay"/>
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:baselineAligned="false">
+    <FrameLayout
+        android:id="@+id/fContainer"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
 </LinearLayout>
