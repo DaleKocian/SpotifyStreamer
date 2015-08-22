@@ -248,6 +248,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onDestroyView() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        mHandler.removeCallbacks(mUpdateTimeTask);
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
