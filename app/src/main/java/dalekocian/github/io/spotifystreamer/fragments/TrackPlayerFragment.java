@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -38,15 +39,17 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 /**
  * Created by dkocian on 8/11/2015.
  */
-public class TrackPlayerFragment extends Fragment implements View.OnClickListener {
+public class TrackPlayerFragment extends Fragment implements View.OnClickListener, OnSeekBarChangeListener {
     private static final int PLAY = 0;
     private static final int PAUSE = 1;
 
     @MagicConstant(intValues = {PLAY, PAUSE})
     @interface MediaPlayerActionName {
+
     }
 
     private static final String TAG = TrackPlayerFragment.class.getName();
+
     public static final int MAX_PROGRESS = 100;
     public static final int DELAY_MILLIS = 100;
     @Bind(R.id.tvArtistName)
@@ -74,7 +77,6 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     private boolean mBound = false;
     private int currentPosition;
     private Handler mHandler = new Handler();
-
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -93,6 +95,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.track_player_ui, container, false);
         ButterKnife.bind(this, view);
+        mSbDuration.setOnSeekBarChangeListener(this);
         trackList = getArguments().getParcelableArrayList(ExtraKeys.TRACK_LIST);
         currentPosition = getArguments().getInt(ExtraKeys.POSITION, 0);
         setupView(trackList.get(currentPosition));
@@ -233,6 +236,24 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         mIvPrevious.setOnClickListener(clickListener);
         mIvPlayPause.setOnClickListener(clickListener);
         mIvNext.setOnClickListener(clickListener);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        int totalDuration = mMediaPlayerService.getDuration();
+        int currentPosition = Utils.progressToTimer(seekBar.getProgress(), totalDuration);
+        mMediaPlayerService.seekTo(currentPosition);
+        updateProgressBar();
     }
 
     @Override

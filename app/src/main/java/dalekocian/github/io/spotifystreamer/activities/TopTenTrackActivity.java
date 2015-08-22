@@ -155,7 +155,7 @@ public class TopTenTrackActivity extends AppCompatActivity implements Callback {
             parcelableTrackArrayList.add(new ParcelableTrack(track));
         }
         intent.putParcelableArrayListExtra(ExtraKeys.TRACK_LIST, parcelableTrackArrayList);
-        intent.putExtra(ExtraKeys.POSITION, new Integer(position));
+        intent.putExtra(ExtraKeys.POSITION, position);
         startActivity(intent);
     }
 }

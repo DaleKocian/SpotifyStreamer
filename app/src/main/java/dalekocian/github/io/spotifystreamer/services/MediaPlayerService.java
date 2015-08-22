@@ -117,6 +117,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     @Override
+    public void seekTo(int position) {
+        mMediaPlayer.seekTo(position);
+    }
+
+    @Override
     public void nextTrack() {
         currentTrackInfo = new CurrentTrackInfo(trackList.get(incrementPosition()));
         isPaused = false;
@@ -151,7 +156,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     @Override
-    public long getDuration() {
+    public int getDuration() {
         return mMediaPlayer.getDuration();
     }
 

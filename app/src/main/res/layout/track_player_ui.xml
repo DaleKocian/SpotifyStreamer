@@ -23,7 +23,8 @@
         android:layout_width="fill_parent"
         android:layout_height="300dp"
         android:id="@+id/ivAlbumArt"
-        android:layout_below="@+id/tvAlbumName" />
+        android:layout_below="@+id/tvAlbumName"
+        android:contentDescription="Album Cover" />
 
     <SeekBar
         android:layout_width="fill_parent"

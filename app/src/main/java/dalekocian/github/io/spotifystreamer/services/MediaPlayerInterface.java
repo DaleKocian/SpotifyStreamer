@@ -3,13 +3,14 @@ package dalekocian.github.io.spotifystreamer.services;
 /**
  * Created by dkocian on 8/12/2015.
  */
-public interface MediaPlayerInterface {
+interface MediaPlayerInterface {
+    void seekTo(int position);
     void nextTrack();
     void prevTrack();
     void playTrack();
     void resumeTrack();
     void pauseTrack();
-    long getDuration();
+    int getDuration();
     long getCurrentPosition();
     boolean isPlaying();
 }
