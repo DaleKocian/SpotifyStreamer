@@ -156,7 +156,9 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     private void playSong() {
         mMediaPlayerService.playTrack();
         swapPlayPauseButton(PAUSE);
-        resetSeekBar();
+        if (mMediaPlayerService.getCurrentPosition() == 0) {
+            resetSeekBar();
+        }
         setupView(mMediaPlayerService.getCurrentTrackInfo());
     }
 
@@ -192,13 +194,9 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         public void run() {
             long totalDuration = mMediaPlayerService.getDuration();
             long currentDuration = mMediaPlayerService.getCurrentPosition();
-            // Displaying Total Duration time
             mTvDuration.setText(Utils.millisecondsToTime(totalDuration));
-            // Displaying time completed playing
             mTvCurrentTime.setText(Utils.millisecondsToTime(currentDuration));
-            // Updating progress bar
             int progress = Utils.getProgressPercentage(currentDuration, totalDuration);
-            //Log.d("Progress", ""+progress);
             mSbDuration.setProgress(progress);
             // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, DELAY_MILLIS);

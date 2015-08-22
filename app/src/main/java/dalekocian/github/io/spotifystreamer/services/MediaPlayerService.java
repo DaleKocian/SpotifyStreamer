@@ -35,6 +35,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     private List<ParcelableTrack> trackList;
     private int currentPosition;
     private CurrentTrackInfo currentTrackInfo;
+    private boolean isPaused = false;
 
     @Nullable
     @Override
@@ -50,8 +51,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         }
         return mBinder;
     }
-
-
 
     public void foregroundService() {
         PendingIntent resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
@@ -80,6 +79,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
+        sendStartActionBroadCast();
+    }
+
+    private void sendStartActionBroadCast() {
         Intent intent = new Intent();
         intent.setAction(Constants.MEDIA_PLAYER_START_ACTION);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
@@ -114,20 +117,34 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void nextTrack() {
         currentTrackInfo = new CurrentTrackInfo(trackList.get(incrementPosition()));
+        isPaused = false;
     }
 
     @Override
     public void prevTrack() {
         currentTrackInfo = new CurrentTrackInfo(trackList.get(decrementPosition()));
+        isPaused = false;
     }
 
     @Override
     public void playTrack() {
-        startPlayer();
+        if (isPaused) {
+            resumeTrack();
+        } else {
+            startPlayer();
+        }
+        isPaused = false;
+    }
+
+    @Override
+    public void resumeTrack() {
+        mMediaPlayer.start();
+        sendStartActionBroadCast();
     }
 
     @Override
     public void pauseTrack() {
+        isPaused = true;
         mMediaPlayer.pause();
     }
 
@@ -140,8 +157,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     public long getCurrentPosition() {
         return mMediaPlayer.getCurrentPosition();
     }
-
-
 
     @Override
     public boolean isPlaying() {
