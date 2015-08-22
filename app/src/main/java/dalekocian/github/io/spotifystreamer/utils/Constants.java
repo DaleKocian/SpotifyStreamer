@@ -9,4 +9,5 @@ public class Constants {
     public static final String SINGLE_QUOTE = "\"";
     public static final String PLEASE_TRY_ANOTHER_ARTIST = "Please try another artist.";
     public static final String LIST_POSITION_BUNDLE_KEY = "LIST_POSITION";
+    public static final String MEDIA_PLAYER_START_ACTION = "dalekocian.github.io.spotifystreamer.MEDIA_PLAYER_START";
 }

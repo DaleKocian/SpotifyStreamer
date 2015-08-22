@@ -25,11 +25,10 @@
         android:id="@+id/ivAlbumArt"
         android:layout_below="@+id/tvAlbumName" />
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
+    <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/pbDuration"
+        android:id="@+id/sbDuration"
         android:layout_below="@+id/tvTrackName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="33dp" />
@@ -40,9 +39,9 @@
         android:background="@android:color/black"
         android:src="@android:drawable/ic_media_previous"
         android:id="@+id/ivPrevious"
-        android:layout_below="@+id/pbDuration"
+        android:layout_below="@+id/sbDuration"
         android:layout_marginTop="32dp"
-        android:contentDescription="Play previous track" />
+        android:contentDescription="@string/previous_button_content_description" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -52,7 +51,7 @@
         android:src="@android:drawable/ic_media_play"
         android:layout_alignTop="@+id/ivPrevious"
         android:layout_centerHorizontal="true"
-        android:contentDescription="Play current track" />
+        android:contentDescription="@string/play_button_context_description" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -63,7 +62,7 @@
         android:layout_alignTop="@+id/ivPlayPause"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:contentDescription="Play next track" />
+        android:contentDescription="@string/next_button_content_description" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,7 +79,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="0:00"
         android:id="@+id/tvCurrentTime"
-        android:layout_below="@+id/pbDuration"
+        android:layout_below="@+id/sbDuration"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false" />
 

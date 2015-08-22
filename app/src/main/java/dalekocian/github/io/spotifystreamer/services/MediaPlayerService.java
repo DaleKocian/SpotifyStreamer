@@ -12,12 +12,14 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
 
 import dalekocian.github.io.spotifystreamer.model.ParcelableTrack;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import kaaes.spotify.webapi.android.models.Image;
 
@@ -49,6 +51,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         return mBinder;
     }
 
+
+
     public void foregroundService() {
         PendingIntent resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 new Intent(getApplicationContext(), MediaPlayerService.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -71,12 +75,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnErrorListener(this);
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mMediaPlayer.prepareAsync();
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
+        Intent intent = new Intent();
+        intent.setAction(Constants.MEDIA_PLAYER_START_ACTION);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
@@ -94,28 +100,25 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(currentTrackInfo.url);
-            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mMediaPlayer.start();
-                }
-            });
+            mMediaPlayer.setOnPreparedListener(this);
             mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
+    public CurrentTrackInfo getCurrentTrackInfo() {
+        return currentTrackInfo;
+    }
+
     @Override
     public void nextTrack() {
         currentTrackInfo = new CurrentTrackInfo(trackList.get(incrementPosition()));
-        startPlayer();
     }
 
     @Override
     public void prevTrack() {
         currentTrackInfo = new CurrentTrackInfo(trackList.get(decrementPosition()));
-        startPlayer();
     }
 
     @Override
@@ -127,6 +130,18 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     public void pauseTrack() {
         mMediaPlayer.pause();
     }
+
+    @Override
+    public long getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    @Override
+    public long getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+
 
     @Override
     public boolean isPlaying() {
@@ -164,7 +179,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
-    class CurrentTrackInfo {
+    public class CurrentTrackInfo {
         String url;
         String artistName;
         String trackName;
@@ -179,6 +194,30 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
             this.albumName = parcelableTrack.album.name;
             this.duration = parcelableTrack.duration_ms;
             this.albumImage = parcelableTrack.album.images.get(0);
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getArtistName() {
+            return artistName;
+        }
+
+        public String getTrackName() {
+            return trackName;
+        }
+
+        public String getAlbumName() {
+            return albumName;
+        }
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public Image getAlbumImage() {
+            return albumImage;
         }
     }
 }

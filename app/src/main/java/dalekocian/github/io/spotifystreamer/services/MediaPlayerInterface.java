@@ -8,5 +8,7 @@ public interface MediaPlayerInterface {
     void prevTrack();
     void playTrack();
     void pauseTrack();
+    long getDuration();
+    long getCurrentPosition();
     boolean isPlaying();
 }
