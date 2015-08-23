@@ -10,9 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import dalekocian.github.io.spotifystreamer.R;
 
@@ -20,6 +24,10 @@ import dalekocian.github.io.spotifystreamer.R;
  * Created by Dale Kocian on 6/12/2015.
  */
 public class Utils {
+    private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    static {
+        TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone(Constants.UTC_TIME_ZONE));
+    }
     public static String getCountryCodeFromSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Resources resources = context.getResources();
@@ -97,36 +105,17 @@ public class Utils {
         return map;
     }
 
-    public static String millisecondsToTime(long timeInMilliseconds) {
-        String finalTimerString = "";
-        String secondsString;
-        int hours = (int) (timeInMilliseconds / (1000 * 60 * 60));
-        int minutes = (int) (timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60);
-        int seconds = (int) ((timeInMilliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-        if (hours > 0) {
-            finalTimerString = hours + ":";
-        }
-        if (seconds < 10) {
-            secondsString = "0" + seconds;
-        } else {
-            secondsString = "" + seconds;
-        }
-        finalTimerString = finalTimerString + minutes + ":" + secondsString;
-        return finalTimerString;
+    public static String millisecondsToTimeString(long timeInMilliseconds) {
+        String format = TIME_FORMATTER.format(new Date(timeInMilliseconds));
+        return format.replaceFirst("^00:", "");
     }
 
-    public static int getProgressPercentage(long currentDuration, long totalDuration) {
-        long currentSeconds = (int) (currentDuration / 1000);
-        long totalSeconds = (int) (totalDuration / 1000);
-        Double percentage = (((double) currentSeconds) / totalSeconds) * 100;
+    public static int getProgressPercentage(long currentTimeInMilliseconds, long totalDurationInMilliseconds) {
+        Double percentage = (double) currentTimeInMilliseconds / totalDurationInMilliseconds * Constants.MAX_PROGRESS;
         return percentage.intValue();
     }
 
-    public static int progressToTimer(int progress, int totalDuration) {
-        totalDuration = totalDuration / 1000;
-        int currentDuration = (int) ((((double)progress) / 100) * totalDuration);
-
-        // return current duration in milliseconds
-        return currentDuration * 1000;
+    public static int progressToMilliseconds(int progress, int totalDurationInMilli) {
+        return (int) ((double) progress / Constants.MAX_PROGRESS * totalDurationInMilli);
     }
 }

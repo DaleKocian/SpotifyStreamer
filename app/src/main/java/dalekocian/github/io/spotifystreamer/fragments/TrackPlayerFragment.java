@@ -40,6 +40,8 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
  * Created by dkocian on 8/11/2015.
  */
 public class TrackPlayerFragment extends Fragment implements View.OnClickListener, OnSeekBarChangeListener {
+    private static final String TAG = TrackPlayerFragment.class.getName();
+    public static final int DELAY_MILLIS = 100;
     private static final int PLAY = 0;
     private static final int PAUSE = 1;
 
@@ -48,10 +50,6 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
 
     }
 
-    private static final String TAG = TrackPlayerFragment.class.getName();
-
-    public static final int MAX_PROGRESS = 100;
-    public static final int DELAY_MILLIS = 100;
     @Bind(R.id.tvArtistName)
     TextView mTvArtistName;
     @Bind(R.id.tvAlbumName)
@@ -75,7 +73,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     private MediaPlayerService mMediaPlayerService;
     private List<ParcelableTrack> trackList;
     private boolean mBound = false;
-    private int currentPosition;
+    private int currentPosition = 0;
     private Handler mHandler = new Handler();
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -96,6 +94,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.track_player_ui, container, false);
         ButterKnife.bind(this, view);
         mSbDuration.setOnSeekBarChangeListener(this);
+        mSbDuration.setMax(Constants.MAX_PROGRESS);
         trackList = getArguments().getParcelableArrayList(ExtraKeys.TRACK_LIST);
         currentPosition = getArguments().getInt(ExtraKeys.POSITION, 0);
         setupView(trackList.get(currentPosition));
@@ -119,7 +118,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         mTvAlbumName.setText(albumName);
         Picasso.with(getActivity()).load(albumImageUrl).into(mIvAlbumArt);
         mTvTrackName.setText(trackName);
-        mTvCurrentTime.setText((Utils.millisecondsToTime(0)));
+        mTvCurrentTime.setText(Constants.ZERO_TIME_STRING);
     }
 
     private void setupView(ParcelableTrack parcelableTrack) {
@@ -192,9 +191,8 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     }
 
     private void resetSeekBar() {
-        mTvCurrentTime.setText((Utils.millisecondsToTime(0)));
+        mTvCurrentTime.setText(Constants.ZERO_TIME_STRING);
         mSbDuration.setProgress(0);
-        mSbDuration.setMax(MAX_PROGRESS);
     }
 
     public void updateProgressBar() {
@@ -205,11 +203,10 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
         public void run() {
             long totalDuration = mMediaPlayerService.getDuration();
             long currentDuration = mMediaPlayerService.getCurrentPosition();
-            mTvDuration.setText(Utils.millisecondsToTime(totalDuration));
-            mTvCurrentTime.setText(Utils.millisecondsToTime(currentDuration));
+            mTvDuration.setText(Utils.millisecondsToTimeString(totalDuration));
+            mTvCurrentTime.setText(Utils.millisecondsToTimeString(currentDuration));
             int progress = Utils.getProgressPercentage(currentDuration, totalDuration);
             mSbDuration.setProgress(progress);
-            // Running this thread after 100 milliseconds
             mHandler.postDelayed(this, DELAY_MILLIS);
         }
     };
@@ -250,8 +247,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         mHandler.removeCallbacks(mUpdateTimeTask);
-        int totalDuration = mMediaPlayerService.getDuration();
-        int currentPosition = Utils.progressToTimer(seekBar.getProgress(), totalDuration);
+        int currentPosition = Utils.progressToMilliseconds(seekBar.getProgress(), mMediaPlayerService.getDuration());
         mMediaPlayerService.seekTo(currentPosition);
         updateProgressBar();
     }
