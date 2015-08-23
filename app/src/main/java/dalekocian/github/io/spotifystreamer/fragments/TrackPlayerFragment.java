@@ -220,6 +220,7 @@ public class TrackPlayerFragment extends Fragment implements View.OnClickListene
             mMediaPlayerService = binder.getService();
             mBound = true;
             setupOnClickListeners(TrackPlayerFragment.this);
+            playSong();
         }
 
         @Override
