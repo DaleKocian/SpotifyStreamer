@@ -13,6 +13,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.ArtistSearchResultsAdapter;
 import dalekocian.github.io.spotifystreamer.listeners.LazyLoadListener;
@@ -27,9 +29,11 @@ import kaaes.spotify.webapi.android.models.Pager;
  * Created by dkocian on 7/9/2015.
  */
 public class ArtistSearchFragment extends Fragment implements AdapterView.OnItemClickListener {
+    @Bind(R.id.lvListItems)
+    ListView mLvListItems;
+    @Bind(R.id.llProgressView)
+    LinearLayout mllProgressView;
     private ArtistSearchResultsAdapter artistSearchResultsAdapter;
-    private ListView lvListItems;
-    private LinearLayout llProgressView;
     private Callback callback;
     private ArtistSearchService artistSearchService;
     public static final String ARTISTS_BUNDLE_KEY = "ARTISTS_BUNDLE_KEY";
@@ -49,21 +53,20 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.artist_results_ui, container, false);
-        lvListItems = (ListView) view.findViewById(R.id.lvListItems);
-        llProgressView = (LinearLayout) view.findViewById(R.id.llProgressView);
+        ButterKnife.bind(this, view);
         artistSearchResultsAdapter = new ArtistSearchResultsAdapter(getActivity(), R.layout.lv_row_search_results, new ArrayList<Artist>(0));
-        lvListItems.setAdapter(artistSearchResultsAdapter);
-        lvListItems.setOnItemClickListener(this);
+        mLvListItems.setAdapter(artistSearchResultsAdapter);
+        mLvListItems.setOnItemClickListener(this);
         final LazyLoadListener lazyLoadListener = new LazyLoadListener() {
             @Override
             public void addNewElements() {
                 boolean executedSearch = artistSearchService.searchArtistNext();
                 if (executedSearch) {
-                    llProgressView.setVisibility(View.VISIBLE);
+                    mllProgressView.setVisibility(View.VISIBLE);
                 }
             }
         };
-        lvListItems.setOnScrollListener(lazyLoadListener);
+        mLvListItems.setOnScrollListener(lazyLoadListener);
         artistSearchService = new ArtistSearchService(getActivity(), getArtistSearchResponseListener(lazyLoadListener))
                 .setCallback(getArtistSearchCallback());
         return view;
@@ -104,10 +107,10 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
             artistSearchResultsAdapter.clear();
         }
         artistSearchResultsAdapter.addAll(artistPager.items);
-        llProgressView.setVisibility(View.GONE);
+        mllProgressView.setVisibility(View.GONE);
         artistSearchResultsAdapter.notifyDataSetChanged();
         if (artistPager.previous == null) {
-            lvListItems.setSelection(0);
+            mLvListItems.setSelection(0);
         }
     }
 
@@ -128,7 +131,7 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
             parcelableArtistArrayList.add(new ParcelableArtist(artist));
         }
         outState.putParcelableArrayList(ARTISTS_BUNDLE_KEY, parcelableArtistArrayList);
-        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());
+        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, mLvListItems.getFirstVisiblePosition());
     }
 
     @Override
@@ -143,7 +146,7 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
                     artistSearchResultsAdapter.add(artist.getArtist());
                 }
                 artistSearchResultsAdapter.notifyDataSetChanged();
-                lvListItems.setSelection(position);
+                mLvListItems.setSelection(position);
             }
         }
     }
@@ -151,7 +154,13 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     public void setActivateOnItemClick(boolean activateOnItemClick) {
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
-        lvListItems.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+        mLvListItems.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     public interface Callback {

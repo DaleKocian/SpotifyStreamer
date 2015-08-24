@@ -71,7 +71,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     }
 
     private boolean isTablet() {
-        return mFContainer.getTag() != null && mFContainer.getTag().toString().equals("tablet");
+        return mFContainer.getTag() != null && mFContainer.getTag().toString().equals(getResources().getString(R.string.tablet_tag));
     }
 
     @Override
