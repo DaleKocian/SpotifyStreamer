@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/gallery" android:orientation="horizontal" android:weightSum="2">
+    android:layout_height="match_parent" android:orientation="horizontal" android:weightSum="2">
 
     <RelativeLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical"
         android:layout_weight="1">
         <TextView android:id="@+id/tvAlbumName" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" android:text="Album Name" android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_centerHorizontal="true" android:text="@string/placeholder_album_name" android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView android:id="@+id/tvTrackName" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_below="@+id/tvAlbumName" android:layout_centerHorizontal="true" android:text="Track Name"
+            android:layout_below="@+id/tvAlbumName" android:layout_centerHorizontal="true" android:text="@string/placeholder_track_name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView android:id="@+id/tvArtistName" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_below="@+id/tvTrackName" android:layout_centerHorizontal="true" android:text="Artist Name"
+            android:layout_below="@+id/tvTrackName" android:layout_centerHorizontal="true" android:text="@string/placeholder_artist_name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <SeekBar android:id="@+id/sbDuration" android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -31,15 +31,15 @@
 
         <TextView android:id="@+id/tvCurrentTime" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_alignParentLeft="true" android:layout_alignParentStart="false" android:layout_below="@+id/sbDuration"
-            android:text="0:00" android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:text="@string/initial_time_of_track" android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView android:id="@+id/tvDuration" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tvCurrentTime" android:layout_alignParentEnd="true" android:layout_alignParentRight="true"
-            android:text="0:30" android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:text="@string/placeholder_track_duration" android:textAppearance="?android:attr/textAppearanceSmall" />
     </RelativeLayout>
     <ImageView android:id="@+id/ivAlbumArt" android:layout_width="0dp" android:layout_height="match_parent"
-        android:layout_alignParentRight="true" android:layout_centerVertical="true" android:layout_weight="1"
-        android:contentDescription="Album Cover" />
+        android:layout_weight="1"
+        android:contentDescription="@string/cd_album_cover_image" android:layout_gravity="center_vertical" />
 
 
 </LinearLayout>
