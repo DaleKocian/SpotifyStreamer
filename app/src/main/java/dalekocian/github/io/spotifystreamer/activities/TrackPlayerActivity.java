@@ -17,7 +17,7 @@ public class TrackPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.artist_search_ui);
+        setContentView(R.layout.track_player_ui);
         Bundle args = new Bundle();
         args.putParcelableArrayList(ExtraKeys.TRACK_LIST, getIntent().getParcelableArrayListExtra(ExtraKeys.TRACK_LIST));
         args.putInt(ExtraKeys.POSITION, getIntent().getIntExtra(ExtraKeys.POSITION, 0));

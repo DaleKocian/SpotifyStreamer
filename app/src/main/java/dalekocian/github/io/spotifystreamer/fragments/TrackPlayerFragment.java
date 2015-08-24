@@ -91,7 +91,7 @@ public class TrackPlayerFragment extends DialogFragment implements View.OnClickL
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.track_player_ui, container, false);
+        View view = inflater.inflate(R.layout.track_player_fragment, container, false);
         ButterKnife.bind(this, view);
         mSbDuration.setOnSeekBarChangeListener(this);
         mSbDuration.setMax(Constants.MAX_PROGRESS);

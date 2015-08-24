@@ -51,7 +51,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.artist_search_ui);
         ButterKnife.bind(this);
-        mTwoPane = mFContainer.getTag().toString().equals("tablet");
+        mTwoPane = isTablet();
         if (savedInstanceState == null) {
             artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().findFragmentById(R.id.artistSearchFragment);
             getSupportFragmentManager().beginTransaction()
@@ -68,6 +68,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             getSupportFragmentManager().beginTransaction()
                     .hide(artistSearchFragment).commit();
         }
+    }
+
+    private boolean isTablet() {
+        return mFContainer.getTag() != null && mFContainer.getTag().toString().equals("tablet");
     }
 
     @Override
