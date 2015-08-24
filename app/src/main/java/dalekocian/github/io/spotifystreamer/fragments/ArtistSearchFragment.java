@@ -135,21 +135,25 @@ public class ArtistSearchFragment extends Fragment implements AdapterView.OnItem
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-            int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
             ArrayList<ParcelableArtist> parcelableArrayList = savedInstanceState.getParcelableArrayList(ARTISTS_BUNDLE_KEY);
-            artistSearchResultsAdapter.clear();
-            for (ParcelableArtist artist : parcelableArrayList) {
-                artistSearchResultsAdapter.add(artist.getArtist());
+            if (parcelableArrayList != null) {
+                int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
+                artistSearchResultsAdapter.clear();
+                for (ParcelableArtist artist : parcelableArrayList) {
+                    artistSearchResultsAdapter.add(artist.getArtist());
+                }
+                artistSearchResultsAdapter.notifyDataSetChanged();
+                lvListItems.setSelection(position);
             }
-            artistSearchResultsAdapter.notifyDataSetChanged();
-            lvListItems.setSelection(position);
         }
     }
+
     public void setActivateOnItemClick(boolean activateOnItemClick) {
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
         lvListItems.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
     }
+
     public interface Callback {
         void onNoResults();
 
