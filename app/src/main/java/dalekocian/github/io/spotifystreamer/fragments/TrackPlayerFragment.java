@@ -247,10 +247,12 @@ public class TrackPlayerFragment extends DialogFragment implements View.OnClickL
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mHandler.removeCallbacks(mUpdateTimeTask);
-        int currentPosition = Utils.progressToMilliseconds(seekBar.getProgress(), mMediaPlayerService.getDuration());
-        mMediaPlayerService.seekTo(currentPosition);
-        updateProgressBar();
+        if (mMediaPlayerService.isPrepared()) {
+            mHandler.removeCallbacks(mUpdateTimeTask);
+            int currentPosition = Utils.progressToMilliseconds(seekBar.getProgress(), mMediaPlayerService.getDuration());
+            mMediaPlayerService.seekTo(currentPosition);
+            updateProgressBar();
+        }
     }
 
     @Override

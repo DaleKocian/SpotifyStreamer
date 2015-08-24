@@ -37,6 +37,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     private int currentPosition;
     private CurrentTrackInfo currentTrackInfo;
     private boolean isPaused = false;
+    private boolean isPrepared = false;
 
     @Nullable
     @Override
@@ -80,6 +81,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        isPrepared = true;
         mediaPlayer.start();
         sendStartActionBroadCast();
     }
@@ -102,6 +104,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
     private void startPlayer() {
+        isPrepared = false;
         mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(currentTrackInfo.url);
@@ -199,6 +202,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
         Intent intent = new Intent();
         intent.setAction(Constants.MEDIA_PLAYER_FINISH_ACTION);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    public boolean isPrepared() {
+        return isPrepared;
     }
 
     public class LocalBinder extends Binder {
