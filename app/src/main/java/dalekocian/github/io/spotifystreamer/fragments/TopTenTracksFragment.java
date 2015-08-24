@@ -18,7 +18,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.adapters.TopTenTracksAdapter;
+import dalekocian.github.io.spotifystreamer.model.ParcelableTrack;
 import dalekocian.github.io.spotifystreamer.services.TopTenTrackSearchService;
+import dalekocian.github.io.spotifystreamer.utils.Constants;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 
@@ -27,6 +29,7 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public class TopTenTracksFragment extends Fragment implements OnItemClickListener {
     private static final String TAG = TopTenTracksFragment.class.getName();
+    public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     @Bind(R.id.lvListItems)
     ListView mLvListItems;
     private TopTenTracksAdapter topTenTracksAdapter;
@@ -59,8 +62,37 @@ public class TopTenTracksFragment extends Fragment implements OnItemClickListene
                 topTenTracksCallback.onLoading();
             }
         });
-        topTenTracksCallback.onViewCreated();
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<ParcelableTrack> trackArrayList = new ArrayList<>(topTenTracksAdapter.getTrackList().size());
+        for (Track track : topTenTracksAdapter.getTrackList()) {
+            trackArrayList.add(new ParcelableTrack(track));
+        }
+        outState.putParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY, trackArrayList);
+        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, mLvListItems.getFirstVisiblePosition());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
+            ArrayList<ParcelableTrack> trackArrayList = savedInstanceState.getParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY);
+            if (trackArrayList != null) {
+                topTenTracksAdapter.clear();
+                for (ParcelableTrack parcelableTrack : trackArrayList) {
+                    topTenTracksAdapter.add(parcelableTrack.getTrack());
+                }
+                topTenTracksAdapter.notifyDataSetChanged();
+                mLvListItems.setSelection(position);
+            }
+        } else {
+            topTenTracksCallback.onViewCreated();
+        }
     }
 
     private TopTenTrackSearchService.ResponseListener getTopTenTrackSearchResponseListener() {

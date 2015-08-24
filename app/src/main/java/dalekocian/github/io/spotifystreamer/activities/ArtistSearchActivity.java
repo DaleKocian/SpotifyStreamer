@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -33,10 +32,12 @@ import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.Track;
 
 public class ArtistSearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, ArtistSearchFragment.Callback,
-        TopTenTracksFragment.TopTenTracksCallback{
+        TopTenTracksFragment.TopTenTracksCallback {
     private static final String TAG = ArtistSearchActivity.class.getName();
     public static final String SEARCH_STRING_BUNDLE_KEY = "SEARCH_STRING";
     public static final String SAVED_FRAGMENT = "SAVED_FRAGMENT";
+    public static final String VISIBLE_FRAGMENT = "VISIBLE_FRAGMENT";
+    public static final String VISIBLE_FRAGMENT_TAG = "VISIBLE_FRAGMENT_TAG";
     @Bind(R.id.fContainer)
     FrameLayout mFContainer;
     private ArtistSearchFragment artistSearchFragment;
@@ -45,6 +46,7 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
     private boolean mTwoPane;
     private String countryCode;
     private String selectedArtistId;
+    private String fragmentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,25 +55,52 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         ButterKnife.bind(this);
         mTwoPane = isTablet();
         if (savedInstanceState == null) {
-            artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().findFragmentById(R.id.artistSearchFragment);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fContainer, new ArtistSearchInstructionsFragment())
-                    .commit();
+            init();
         } else {
-            searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
-            artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().getFragment(savedInstanceState, SAVED_FRAGMENT);
+            handleInstanceStateRestored(savedInstanceState);
         }
         if (mTwoPane) {
             artistSearchFragment.setActivateOnItemClick(true);
             countryCode = Utils.getCountryCodeFromSettings(this);
-        } else {
-            getSupportFragmentManager().beginTransaction()
-                    .hide(artistSearchFragment).commit();
         }
     }
 
-    private boolean isTablet() {
-        return mFContainer.getTag() != null && mFContainer.getTag().toString().equals(getResources().getString(R.string.tablet_tag));
+    private void init() {
+        fragmentTag = ArtistSearchInstructionsFragment.class.getName();
+        artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().findFragmentById(R.id.artistSearchFragment);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fContainer, new ArtistSearchInstructionsFragment(), fragmentTag)
+                .commit();
+        if (!mTwoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .hide(artistSearchFragment)
+                    .commit();
+        }
+    }
+
+    private void handleInstanceStateRestored(Bundle savedInstanceState) {
+        artistSearchFragment = (ArtistSearchFragment) getSupportFragmentManager().getFragment(savedInstanceState, SAVED_FRAGMENT);
+        searchString = savedInstanceState.getString(SEARCH_STRING_BUNDLE_KEY);
+        fragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG);
+        if (mTwoPane) {
+            Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, VISIBLE_FRAGMENT);
+            if (TopTenTracksFragment.class.getName().equals(fragmentTag)) {
+                topTenTracksFragment = (TopTenTracksFragment) fragment;
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fContainer, fragment, fragmentTag)
+                    .commit();
+        } else {
+            if (fragmentTag == null) {
+                mFContainer.setVisibility(View.GONE);
+            } else {
+                Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, VISIBLE_FRAGMENT);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fContainer, fragment, fragmentTag)
+                        .hide(artistSearchFragment)
+                        .commit();
+            }
+        }
     }
 
     @Override
@@ -111,6 +140,25 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         return super.onOptionsItemSelected(item);
     }
 
+    private void showAndReplaceFragment(Fragment fragment, String fragmentTag) {
+        if (!fragment.isVisible()) {
+            this.fragmentTag = fragmentTag;
+            getSupportFragmentManager().beginTransaction().replace(R.id.fContainer, fragment, this.fragmentTag).commit();
+            hideArtistSearchFragmentIfVisible();
+            mFContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideArtistSearchFragmentIfVisible() {
+        if (!mTwoPane && artistSearchFragment.isVisible()) {
+            getSupportFragmentManager().beginTransaction().hide(artistSearchFragment).commit();
+        }
+    }
+
+    private boolean isTablet() {
+        return mFContainer.getTag() != null && mFContainer.getTag().toString().equals(getResources().getString(R.string.tablet_tag));
+    }
+
     @Override
     public boolean onQueryTextSubmit(String artistName) {
         return false;
@@ -121,24 +169,10 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         if (searchString.isEmpty()) {
             showAndReplaceFragment(new ArtistSearchInstructionsFragment(), ArtistSearchInstructionsFragment.class.getName());
         } else if (!searchString.equals(this.searchString)) {
-            this.searchString = searchString;
             artistSearchFragment.search(searchString);
         }
+        this.searchString = searchString;
         return false;
-    }
-
-    private void showAndReplaceFragment(Fragment fragment, String fragmentTag) {
-        if (!fragment.isVisible()) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fContainer, fragment, fragmentTag).commit();
-            hideArtistSearchFragmentIfVisible();
-            mFContainer.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void hideArtistSearchFragmentIfVisible() {
-        if (!mTwoPane && artistSearchFragment.isVisible()) {
-            getSupportFragmentManager().beginTransaction().hide(artistSearchFragment).commit();
-        }
     }
 
     @Override
@@ -191,7 +225,8 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
             arguments.putString(ExtraKeys.ARTIST_NAME, artist.name);*/
             topTenTracksFragment = new TopTenTracksFragment();
 //            topTenTracksFragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fContainer, topTenTracksFragment).commit();
+            showAndReplaceFragment(topTenTracksFragment, TopTenTracksFragment.class.getName());
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fContainer, topTenTracksFragment).commit();
         } else {
             Intent topTenTrackIntent = new Intent(this, TopTenTrackActivity.class);
             topTenTrackIntent.putExtra(ExtraKeys.ARTIST_ID, artist.id);
@@ -205,9 +240,13 @@ public class ArtistSearchActivity extends AppCompatActivity implements SearchVie
         super.onSaveInstanceState(outState);
         outState.putString(SEARCH_STRING_BUNDLE_KEY, searchString);
         getSupportFragmentManager().putFragment(outState, SAVED_FRAGMENT, artistSearchFragment);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        if (!mTwoPane && !artistSearchFragment.isVisible()) {
+            outState.putString(VISIBLE_FRAGMENT_TAG, fragmentTag);
+            getSupportFragmentManager().putFragment(outState, VISIBLE_FRAGMENT, getSupportFragmentManager().findFragmentByTag(fragmentTag));
+        }
+        if (mTwoPane) {
+            outState.putString(VISIBLE_FRAGMENT_TAG, fragmentTag);
+            getSupportFragmentManager().putFragment(outState, VISIBLE_FRAGMENT, getSupportFragmentManager().findFragmentByTag(fragmentTag));
+        }
     }
 }
