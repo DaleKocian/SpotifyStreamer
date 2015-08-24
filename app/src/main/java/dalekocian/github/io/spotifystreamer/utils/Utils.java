@@ -25,6 +25,8 @@ import dalekocian.github.io.spotifystreamer.R;
  */
 public class Utils {
     private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    public static final String ZERO_TIME_REGEX = "^00:(?:0){0,1}";
+
     static {
         TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone(Constants.UTC_TIME_ZONE));
     }
@@ -107,7 +109,7 @@ public class Utils {
 
     public static String millisecondsToTimeString(long timeInMilliseconds) {
         String format = TIME_FORMATTER.format(new Date(timeInMilliseconds));
-        return format.replaceFirst("^00:", "");
+        return format.replaceFirst(ZERO_TIME_REGEX, "");
     }
 
     public static int getProgressPercentage(long currentTimeInMilliseconds, long totalDurationInMilliseconds) {
