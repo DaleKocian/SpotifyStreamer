@@ -2,7 +2,6 @@ package dalekocian.github.io.spotifystreamer.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,10 +21,13 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Track;
 
 public class TopTenTrackActivity extends AppCompatActivity implements TopTenTracksCallback {
+    public static final String TOP_TEN_TRACKS_FRAGMENT = "TOP_TEN_TRACKS_FRAGMENT";
+    public static final String VISIBLE_FRAGMENT = "VISIBLE_FRAGMENT";
+    public static final String VISIBLE_FRAGMENT_TAG = "VISIBLE_FRAGMENT_TAG";
     private static final String TAG = TopTenTrackActivity.class.getName();
-    public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     private TopTenTracksFragment topTenTracksFragment;
     private String visibleFragmentTag = "";
+
     private String countryCode;
 
     @Override
@@ -40,6 +42,20 @@ public class TopTenTrackActivity extends AppCompatActivity implements TopTenTrac
                     .replace(R.id.fContainer, new LoadingFragment(), visibleFragmentTag)
                     .add(R.id.fContainer, topTenTracksFragment, TopTenTracksFragment.class.getName())
                     .hide(topTenTracksFragment).commit();
+        } else {
+            topTenTracksFragment = (TopTenTracksFragment) getSupportFragmentManager().getFragment(savedInstanceState, TOP_TEN_TRACKS_FRAGMENT);
+            visibleFragmentTag = savedInstanceState.getString(VISIBLE_FRAGMENT_TAG);
+            if (visibleFragmentTag == null) {
+                visibleFragmentTag = TopTenTracksFragment.class.getName();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fContainer, topTenTracksFragment, visibleFragmentTag).commit();
+            } else {
+                Fragment fragment = getSupportFragmentManager().getFragment(savedInstanceState, VISIBLE_FRAGMENT);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fContainer, fragment, visibleFragmentTag)
+                        .add(R.id.fContainer, topTenTracksFragment, TopTenTracksFragment.class.getName())
+                        .hide(topTenTracksFragment).commit();
+            }
         }
     }
 
@@ -71,26 +87,13 @@ public class TopTenTrackActivity extends AppCompatActivity implements TopTenTrac
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-       /* super.onSaveInstanceState(outState);
-        ArrayList<ParcelableTrack> trackArrayList = new ArrayList<>(topTenTracksAdapter.getTrackList().size());
-        for (Track track : topTenTracksAdapter.getTrackList()) {
-            trackArrayList.add(new ParcelableTrack(track));
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, TOP_TEN_TRACKS_FRAGMENT, getSupportFragmentManager().findFragmentByTag
+                (TopTenTracksFragment.class.getName()));
+        if (!topTenTracksFragment.isVisible()) {
+            outState.putString(VISIBLE_FRAGMENT_TAG, visibleFragmentTag);
+            getSupportFragmentManager().putFragment(outState, VISIBLE_FRAGMENT, getSupportFragmentManager().findFragmentByTag(visibleFragmentTag));
         }
-        outState.putParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY, trackArrayList);
-        outState.putInt(Constants.LIST_POSITION_BUNDLE_KEY, lvListItems.getFirstVisiblePosition());*/
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-       /* super.onRestoreInstanceState(savedInstanceState);
-        int position = savedInstanceState.getInt(Constants.LIST_POSITION_BUNDLE_KEY, 0);
-        ArrayList<ParcelableTrack> trackArrayList = savedInstanceState.getParcelableArrayList(TOP_TEN_TRACKS_BUNDLE_KEY);
-        topTenTracksAdapter.clear();
-        for (ParcelableTrack parcelableTrack : trackArrayList) {
-            topTenTracksAdapter.add(parcelableTrack.getTrack());
-        }
-        topTenTracksAdapter.notifyDataSetChanged();
-        lvListItems.setSelection(position);*/
     }
 
     private void callTopTenTrackSearch() {
