@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="android:background">@color/gallery</item>-->
+        <item name="android:windowBackground">@color/gallery</item>
     </style>
     <style name="listImage" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:layout_width">@dimen/list_image_width</item>

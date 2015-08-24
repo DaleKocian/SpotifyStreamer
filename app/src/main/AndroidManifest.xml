@@ -4,8 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+        android:fullBackupContent="true"
+        android:name=".SpotifyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,8 +31,12 @@
             android:name=".activities.TopTenTrackActivity"
             android:label="@string/title_activity_top_ten_track"/>
         <activity
+            android:name=".activities.TrackPlayerActivity"
+            android:label="Track Player Activity"/>
+        <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_preference"/>
+        <service android:name=".services.MediaPlayerService"/>
     </application>
 
 </manifest>

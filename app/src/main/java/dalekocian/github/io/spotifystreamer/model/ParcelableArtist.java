@@ -58,11 +58,6 @@ public class ParcelableArtist extends Artist implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(getParcelableFollowers(this.followers), 0);
         dest.writeStringList(this.genres);
@@ -74,6 +69,11 @@ public class ParcelableArtist extends Artist implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.type);
         dest.writeString(this.uri);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     private ParcelableFollowers getParcelableFollowers(Followers followers) {

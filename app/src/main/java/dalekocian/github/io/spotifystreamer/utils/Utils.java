@@ -10,9 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import dalekocian.github.io.spotifystreamer.R;
 
@@ -20,6 +24,12 @@ import dalekocian.github.io.spotifystreamer.R;
  * Created by Dale Kocian on 6/12/2015.
  */
 public class Utils {
+    private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss", Locale.US);
+    public static final String ZERO_TIME_REGEX = "^00:(?:0){0,1}";
+
+    static {
+        TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone(Constants.UTC_TIME_ZONE));
+    }
     public static String getCountryCodeFromSettings(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Resources resources = context.getResources();
@@ -95,5 +105,19 @@ public class Utils {
             map.put(key, bundle.getString(key));
         }
         return map;
+    }
+
+    public static String millisecondsToTimeString(long timeInMilliseconds) {
+        String format = TIME_FORMATTER.format(new Date(timeInMilliseconds));
+        return format.replaceFirst(ZERO_TIME_REGEX, "");
+    }
+
+    public static int getProgressPercentage(long currentTimeInMilliseconds, long totalDurationInMilliseconds) {
+        Double percentage = (double) currentTimeInMilliseconds / totalDurationInMilliseconds * Constants.MAX_PROGRESS;
+        return percentage.intValue();
+    }
+
+    public static int progressToMilliseconds(int progress, int totalDurationInMilli) {
+        return (int) ((double) progress / Constants.MAX_PROGRESS * totalDurationInMilli);
     }
 }

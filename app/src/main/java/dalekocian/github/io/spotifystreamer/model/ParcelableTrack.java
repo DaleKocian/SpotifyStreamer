@@ -55,8 +55,8 @@ public class ParcelableTrack extends Track implements Parcelable {
         this.album = in.readParcelable(ParcelableAlbumSimple.class.getClassLoader());
         this.external_ids = Utils.createMapFromBundle(in.readBundle());
         this.popularity = (Integer) in.readValue(Integer.class.getClassLoader());
-        List<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>();
-        in.readList(parcelableArtistSimpleList, List.class.getClassLoader());
+        ArrayList<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>();
+        in.readList(parcelableArtistSimpleList, ParcelableArtistSimple.class.getClassLoader());
         this.artists = getArtistFromParcelableArtist(parcelableArtistSimpleList);
         this.available_markets = in.createStringArrayList();
         this.is_playable = Utils.getBooleanFromInt(in.readInt());
@@ -76,11 +76,6 @@ public class ParcelableTrack extends Track implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(new ParcelableAlbumSimple(album), flags);
         dest.writeBundle(Utils.createBundleFromMap(external_ids));
@@ -88,7 +83,7 @@ public class ParcelableTrack extends Track implements Parcelable {
         dest.writeList(getParcelableArtistSimpleList(artists));
         dest.writeStringList(available_markets);
         dest.writeInt(Utils.getIntFromBoolean(is_playable));
-        dest.writeParcelable(getParcelableLinkedTrack(linked_from), 0);
+        dest.writeParcelable(getParcelableLinkedTrack(linked_from), flags);
         dest.writeInt(disc_number);
         dest.writeLong(duration_ms);
         dest.writeByte(Utils.getByteFromBoolean(explicit));
@@ -102,6 +97,11 @@ public class ParcelableTrack extends Track implements Parcelable {
         dest.writeString(uri);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     private ParcelableLinkedTrack getParcelableLinkedTrack(LinkedTrack linked_from) {
         if (linked_from == null) {
             return null;
@@ -109,7 +109,7 @@ public class ParcelableTrack extends Track implements Parcelable {
         return new ParcelableLinkedTrack(this.linked_from);
     }
 
-    private List<ArtistSimple> getArtistFromParcelableArtist(List<ParcelableArtistSimple> parcelableArtistSimpleArrayList) {
+    private List<ArtistSimple> getArtistFromParcelableArtist(ArrayList<ParcelableArtistSimple> parcelableArtistSimpleArrayList) {
         if (parcelableArtistSimpleArrayList == null) {
             return null;
         }
@@ -120,11 +120,11 @@ public class ParcelableTrack extends Track implements Parcelable {
         return artistSimpleList;
     }
 
-    private List<ParcelableArtistSimple> getParcelableArtistSimpleList(List<ArtistSimple> artistSimpleList) {
+    private ArrayList<ParcelableArtistSimple> getParcelableArtistSimpleList(List<ArtistSimple> artistSimpleList) {
         if (artistSimpleList == null) {
             return null;
         }
-        List<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>(artistSimpleList.size());
+        ArrayList<ParcelableArtistSimple> parcelableArtistSimpleList = new ArrayList<>(artistSimpleList.size());
         for (ArtistSimple artistSimple : artistSimpleList) {
             parcelableArtistSimpleList.add(new ParcelableArtistSimple(artistSimple));
         }
