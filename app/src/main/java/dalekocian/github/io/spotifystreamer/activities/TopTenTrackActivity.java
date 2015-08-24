@@ -15,13 +15,13 @@ import dalekocian.github.io.spotifystreamer.R;
 import dalekocian.github.io.spotifystreamer.fragments.LoadingFragment;
 import dalekocian.github.io.spotifystreamer.fragments.NoResultsFragment;
 import dalekocian.github.io.spotifystreamer.fragments.TopTenTracksFragment;
-import dalekocian.github.io.spotifystreamer.fragments.TopTenTracksFragment.Callback;
+import dalekocian.github.io.spotifystreamer.fragments.TopTenTracksFragment.TopTenTracksCallback;
 import dalekocian.github.io.spotifystreamer.model.ParcelableTrack;
 import dalekocian.github.io.spotifystreamer.utils.ExtraKeys;
 import dalekocian.github.io.spotifystreamer.utils.Utils;
 import kaaes.spotify.webapi.android.models.Track;
 
-public class TopTenTrackActivity extends AppCompatActivity implements Callback {
+public class TopTenTrackActivity extends AppCompatActivity implements TopTenTracksCallback {
     private static final String TAG = TopTenTrackActivity.class.getName();
     public static final String TOP_TEN_TRACKS_BUNDLE_KEY = "TOP_TEN_TRACKS_BUNDLE_KEY";
     private TopTenTracksFragment topTenTracksFragment;
@@ -143,7 +143,7 @@ public class TopTenTrackActivity extends AppCompatActivity implements Callback {
     }
 
     @Override
-    public void onAttached() {
+    public void onViewCreated() {
         callTopTenTrackSearch();
     }
 

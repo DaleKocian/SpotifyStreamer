@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +39,7 @@ import dalekocian.github.io.spotifystreamer.utils.Utils;
 /**
  * Created by dkocian on 8/11/2015.
  */
-public class TrackPlayerFragment extends Fragment implements View.OnClickListener, OnSeekBarChangeListener {
+public class TrackPlayerFragment extends DialogFragment implements View.OnClickListener, OnSeekBarChangeListener {
     private static final String TAG = TrackPlayerFragment.class.getName();
     public static final int DELAY_MILLIS = 100;
     private static final int PLAY = 0;

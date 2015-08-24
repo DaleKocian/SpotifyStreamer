@@ -31,13 +31,13 @@ public class TopTenTracksFragment extends Fragment implements OnItemClickListene
     ListView mLvListItems;
     private TopTenTracksAdapter topTenTracksAdapter;
     private TopTenTrackSearchService topTenTrackSearchService;
-    private Callback callback;
+    private TopTenTracksCallback topTenTracksCallback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            callback = (Callback) getActivity();
+            topTenTracksCallback = (TopTenTracksCallback) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(getActivity().toString()
                     + " must implement OnHeadlineSelectedListener");
@@ -56,10 +56,10 @@ public class TopTenTracksFragment extends Fragment implements OnItemClickListene
         topTenTrackSearchService.setCallback(new TopTenTrackSearchService.Callback() {
             @Override
             public void onPreExecute() {
-                callback.onLoading();
+                topTenTracksCallback.onLoading();
             }
         });
-        callback.onAttached();
+        topTenTracksCallback.onViewCreated();
         return view;
     }
 
@@ -72,9 +72,9 @@ public class TopTenTracksFragment extends Fragment implements OnItemClickListene
                     topTenTracksAdapter.clear();
                     topTenTracksAdapter.addAll(trackList);
                     topTenTracksAdapter.notifyDataSetChanged();
-                    callback.onResults();
+                    topTenTracksCallback.onResults();
                 } else {
-                    callback.onNoResults();
+                    topTenTracksCallback.onNoResults();
                 }
             }
         };
@@ -92,17 +92,17 @@ public class TopTenTracksFragment extends Fragment implements OnItemClickListene
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        callback.onItemSelected(topTenTracksAdapter.getTrackList(), position);
+        topTenTracksCallback.onItemSelected(topTenTracksAdapter.getTrackList(), position);
     }
 
-    public interface Callback {
+    public interface TopTenTracksCallback {
         void onNoResults();
 
         void onLoading();
 
         void onResults();
 
-        void onAttached();
+        void onViewCreated();
 
         void onItemSelected(List<Track> trackList, int position);
     }

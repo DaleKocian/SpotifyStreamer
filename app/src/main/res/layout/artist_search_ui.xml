@@ -1,11 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:baselineAligned="false">
+    <fragment android:id="@+id/artistSearchFragment"
+        android:name="dalekocian.github.io.spotifystreamer.fragments.ArtistSearchFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/artist_results_ui"
+        />
     <FrameLayout
         android:id="@+id/fContainer"
-        android:layout_weight="1"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
